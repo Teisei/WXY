@@ -78,8 +78,11 @@ def wxreply():
         return Response(data, mimetype='application/json')
     else:
         print(params)
-        xwx_source = request.headers.get('x-wx-source')
-        xwx_openid = request.headers.get('x-wx-openid')
+        # xwx_source = request.headers.get('x-wx-source')
+        # xwx_openid = request.headers.get('x-wx-openid')
+        xwx_source = params['ToUserName']
+        xwx_openid = params['FromUserName']
+        source = 
         info = {
             'ToUserName': xwx_openid,
             'FromUserName': xwx_source,
