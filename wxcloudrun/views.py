@@ -20,53 +20,41 @@ def count():
     # :return:计数结果/清除结果
     # """
 
-    # # 获取请求体参数
-    # params = request.get_json()
+    # 获取请求体参数
+    params = request.get_json()
 
-    # # 检查action参数
-    # if 'action' not in params:
-    #     return make_err_response('缺少action参数')
+    # 检查action参数
+    if 'action' not in params:
+        return make_err_response('缺少action参数')
 
-    # # 按照不同的action的值，进行不同的操作
-    # action = params['action']
+    # 按照不同的action的值，进行不同的操作
+    action = params['action']
 
-    # # 执行自增操作
-    # if action == 'inc':
-    #     counter = query_counterbyid(1)
-    #     if counter is None:
-    #         counter = Counters()
-    #         counter.id = 1
-    #         counter.count = 1
-    #         counter.created_at = datetime.now()
-    #         counter.updated_at = datetime.now()
-    #         insert_counter(counter)
-    #     else:
-    #         counter.id = 1
-    #         counter.count += 1
-    #         counter.updated_at = datetime.now()
-    #         update_counterbyid(counter)
-    #     return make_succ_response(counter.count)
+    # 执行自增操作
+    if action == 'inc':
+        counter = query_counterbyid(1)
+        if counter is None:
+            counter = Counters()
+            counter.id = 1
+            counter.count = 1
+            counter.created_at = datetime.now()
+            counter.updated_at = datetime.now()
+            insert_counter(counter)
+        else:
+            counter.id = 1
+            counter.count += 1
+            counter.updated_at = datetime.now()
+            update_counterbyid(counter)
+        return make_succ_response(counter.count)
 
-    # # 执行清0操作
-    # elif action == 'clear':
-    #     delete_counterbyid(1)
-    #     return make_succ_empty_response()
+    # 执行清0操作
+    elif action == 'clear':
+        delete_counterbyid(1)
+        return make_succ_empty_response()
 
-    # # action参数错误
-    # else:
-    #     return make_err_response('action参数错误')
-    
-    data = request.get_json()
-    print(data)
-    new_data = {
-        'ToUserName': data['FromUserName'],
-        'FromUserName': data['ToUserName'],
-        'CreateTime': int(datetime.now().timestamp()),
-        'MsgType': 'text',
-        'Content': data["Content"]
-    }
-    return make_succ_response(new_data)
-
+    # action参数错误
+    else:
+        return make_err_response('action参数错误')
 
 @app.route('/api/count', methods=['GET'])
 def get_count():
@@ -104,4 +92,5 @@ def wxreply():
         'MsgType': 'text',
         'Content': data["Content"]
     }
-    return make_succ_response(new_data)
+    data = json.dumps({'code': 200, 'data': new_data})
+    return Response(data, mimetype='application/json')
