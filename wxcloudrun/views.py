@@ -1,4 +1,5 @@
 from datetime import datetime
+import time
 from flask import render_template, request
 from run import app
 from wxcloudrun.dao import delete_counterbyid, query_counterbyid, insert_counter, update_counterbyid
@@ -94,6 +95,16 @@ def wxreply():
         data = json.dumps(info, ensure_ascii=False).encode('utf-8')
         return Response(data, mimetype='application/json')
 
+# --------------------------------------------------
+# 主动发送消息
+# --------------------------------------------------
+@app.route('/sendMsg', methods=['POST'])
+def send_msg():
+    params = request.get_json()
+    openid = params['OpenId']
+    content = params['Content'] # 已是中文
+    return sendMsg(content, openid)
+
 # 每10秒执行一次job函数
 def job():
     print('定时任务执行中...')
@@ -117,4 +128,4 @@ def sendMsg(content, openid='o7Fnt6ZwAZFjOukruDoOOgJXUeA8'):
     }
     response = requests.post(url, headers=headers, json=data)
     app.logger.info('接口返回内容:' + response.text)
-    return json.loads(response.text)
+    return response
