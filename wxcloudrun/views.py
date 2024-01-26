@@ -78,9 +78,8 @@ def wxreply():
         data = json.dumps({'code': 200, 'data': {}})
         return Response(data, mimetype='application/json')
     else:
-        print(params)
-        # xwx_source = request.headers.get('x-wx-source')
-        # xwx_openid = request.headers.get('x-wx-openid')
+        content = params['Content']
+        content = content.encode().decode('unicode_escape')
         xwx_source = params['ToUserName']
         xwx_openid = params['FromUserName']
         info = {
@@ -88,7 +87,7 @@ def wxreply():
             'FromUserName': xwx_source,
             'CreateTime': int(datetime.now().timestamp()),
             'MsgType': 'text',
-            'Content': params['Content'].encode().decode('unicode_escape')
+            'Content': content
         }
         app.logger.info('\n\noutput=' + json.dumps(info))
         data = json.dumps(info, ensure_ascii=False).encode('utf-8')
