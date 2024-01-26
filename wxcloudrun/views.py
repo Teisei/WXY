@@ -103,9 +103,11 @@ def send_msg():
     params = request.get_json()
     openid = params['OpenId']
     content = params['Content'] # 已是中文
-    return sendMsg(content, openid)
+    text = sendMsg(content, openid)
+    data = json.dumps({'code': 200, 'data': {'text': text}})
+    return Response(data, mimetype='application/json')
 
-# 每10秒执行一次job函数
+# 每12小时执行一次job函数
 def job():
     print('定时任务执行中...')
     sendMsg(content='定时任务')
@@ -113,19 +115,20 @@ def run_schedule():
     while True:
         schedule.run_pending()
         time.sleep(1)
-schedule.every(10).seconds.do(job)
+schedule.every(12).hours.do(job)
 t = threading.Thread(target=run_schedule)
 t.start()
 def sendMsg(content, openid='o7Fnt6ZwAZFjOukruDoOOgJXUeA8'):
     url = 'http://api.weixin.qq.com/cgi-bin/message/custom/send'
     headers = {'Content-Type': 'application/json'}
-    data = {
+    info = {
         'touser': openid,
         'msgtype': 'text',
         'text': {
             'content': content
         }
     }
+    data = json.dumps(info, ensure_ascii=False).encode('utf-8')
     response = requests.post(url, headers=headers, json=data)
     app.logger.info('接口返回内容:' + response.text)
-    return response
+    return response.text
