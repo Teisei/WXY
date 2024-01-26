@@ -89,4 +89,4 @@ def wechat():
         'MsgType': 'text',
         'Content': data["Content"]
     }
-    return make_succ_empty_response(new_data)
+    return make_succ_response(new_data)
