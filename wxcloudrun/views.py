@@ -65,12 +65,12 @@ def get_count():
     counter = Counters.query.filter(Counters.id == 1).first()
     return make_succ_response(0) if counter is None else make_succ_response(counter.count)
 
-@app.route('/wxreply', methods=["GET"])
+@app.route('/wxreply', methods=['GET'])
 def get_wxreply():
     data = json.dumps({'code': 200, 'data': {}})
     return Response(data, mimetype='application/json')
 
-@app.route('/wxreply', methods=["POST"])
+@app.route('/wxreply', methods=['POST'])
 def wxreply():
     params = request.get_json()
     if 'action' in params and params['action'] == 'CheckContainerPath':
