@@ -77,9 +77,13 @@ def get_count():
 #     }
 #     response = requests.post(url, json=data)
 #     return response.json()
-    
+
+@app.route('/wxreply', methods=["GET"])
+def get_wxreply():
+    return make_succ_empty_response()
+
 @app.route("/wxreply", methods=["POST"])
-def wechat():
+def wxreply():
     data = request.get_json()
     print(data)
     new_data = {
