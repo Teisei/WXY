@@ -91,5 +91,6 @@ def wxreply():
             'Content': params['Content']
         }
         data = json.dumps({'code': 200, 'data': info})
+        data = json.dumps(info)
         app.logger.info('\n\noutput=' + data)
         return Response(data, mimetype='application/json')
