@@ -84,14 +84,18 @@ def get_wxreply():
 
 @app.route('/wxreply', methods=["POST"])
 def wxreply():
-    data = request.get_json()
-    print(data)
-    new_data = {
-        'ToUserName': data['FromUserName'],
-        'FromUserName': data['ToUserName'],
-        'CreateTime': int(datetime.now().timestamp()),
-        'MsgType': 'text',
-        'Content': data['Content']
-    }
-    data = json.dumps({'code': 200, 'data': new_data})
-    return Response(data, mimetype='application/json')
+    params = request.get_json()
+    if 'action' in params and params['action'] == 'CheckContainerPath':
+        data = json.dumps({'code': 200, 'data': {}})
+        return Response(data, mimetype='application/json')
+    elif:
+        print(params)
+        info = {
+            'ToUserName': params['x-wx-openid'],
+            'FromUserName': params['x-wx-source'],
+            'CreateTime': int(datetime.now().timestamp()),
+            'MsgType': 'text',
+            'Content': params['Content']
+        }
+        data = json.dumps({'code': 200, 'data': info})
+        return Response(data, mimetype='application/json')
