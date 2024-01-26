@@ -7,8 +7,7 @@ from wxcloudrun.response import make_succ_empty_response, make_succ_response, ma
 import json
 from flask import Response
 import requests
-import schedule
-import threading
+from flask_apscheduler import APScheduler
 
 @app.route('/')
 def index():
@@ -94,18 +93,14 @@ def wxreply():
         data = json.dumps(info, ensure_ascii=False).encode('utf-8')
         return Response(data, mimetype='application/json')
 
-# 定时执行的任务逻辑
-def noticeJob():
+
+# https://zhuanlan.zhihu.com/p/321626955
+scheduler = APScheduler()
+# interval examples
+@scheduler.task('interval', id='do_job_1', seconds=3, misfire_grace_time=900)
+def job1():
     print("定时任务执行中...")
-    # 发送post请求
     sendMsg(content='定时任务')
-def run_schedule():
-    while True:
-        schedule.run_pending()
-        time.sleep(1)
-schedule.every(20).seconds.do(noticeJob)  # 每10秒执行一次job函数
-t = threading.Thread(target=run_schedule)
-t.start()
 
 def sendMsg(content, openid='o7Fnt6ZwAZFjOukruDoOOgJXUeA8'):
     url = 'http://api.weixin.qq.com/cgi-bin/message/custom/send'
@@ -120,3 +115,9 @@ def sendMsg(content, openid='o7Fnt6ZwAZFjOukruDoOOgJXUeA8'):
     response = requests.post(url, headers=headers, json=data)
     print('接口返回内容', response.text)
     return json.loads(response.text)
+
+class Config(object):
+    SCHEDULER_API_ENABLED = True
+app.config.from_object(Config())
+scheduler.init_app(app)
+scheduler.start()
