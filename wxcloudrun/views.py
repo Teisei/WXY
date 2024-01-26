@@ -88,8 +88,8 @@ def wxreply():
             'FromUserName': xwx_source,
             'CreateTime': int(datetime.now().timestamp()),
             'MsgType': 'text',
-            'Content': params['Content']
+            'Content': params['Content'].encode().decode('unicode_escape')
         }
+        app.logger.info('\n\noutput=' + json.dumps(info))
         data = json.dumps(info, ensure_ascii=False).encode('utf-8')
-        app.logger.info('\n\noutput=' + data)
         return Response(data, mimetype='application/json')
