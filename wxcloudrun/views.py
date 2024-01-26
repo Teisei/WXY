@@ -90,7 +90,6 @@ def wxreply():
             'MsgType': 'text',
             'Content': params['Content']
         }
-        data = json.dumps({'code': 200, 'data': info})
-        data = json.dumps(info)
+        data = json.dumps(info, ensure_ascii=False).encode('utf-8')
         app.logger.info('\n\noutput=' + data)
         return Response(data, mimetype='application/json')
