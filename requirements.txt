@@ -8,6 +8,5 @@ MarkupSafe==2.0.1
 PyMySQL==1.0.2
 SQLAlchemy==1.4.29
 Werkzeug==2.0.2
-flask-apscheduler==1.12.4
-backports.zoneinfo==0.2.1;python_version<"3.9"
-requests
+requests==2.31.0
+schedule==1.2.1
