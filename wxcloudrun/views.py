@@ -82,4 +82,11 @@ def get_count():
 def wechat():
     data = request.get_json()
     print(data)
-    return ""
+    new_data = {
+        'ToUserName': data['FromUserName'],
+        'FromUserName': data['ToUserName'],
+        'CreateTime': int(datetime.now().timestamp()),
+        'MsgType': 'text',
+        'Content': data["Content"]
+    }
+    return make_succ_empty_response(new_data)
