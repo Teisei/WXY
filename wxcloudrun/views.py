@@ -65,22 +65,10 @@ def get_count():
     counter = Counters.query.filter(Counters.id == 1).first()
     return make_succ_response(0) if counter is None else make_succ_response(counter.count)
 
-# # 回复文本消息!
-# def send_text_message(access_token, user_id, content):
-#     url = f"
-#     data = {
-#         "ToUserName": user_id,
-#         "msgtype": "text",
-#         "text": {
-#             "content": content
-#         }
-#     }
-#     response = requests.post(url, json=data)
-#     return response.json()
-
 @app.route('/wxreply', methods=["GET"])
 def get_wxreply():
-    return make_succ_empty_response()
+    data = json.dumps({'code': 200, 'data': {}})
+    return Response(data, mimetype='application/json')
 
 @app.route('/wxreply', methods=["POST"])
 def wxreply():
