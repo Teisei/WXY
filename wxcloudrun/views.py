@@ -82,7 +82,6 @@ def wxreply():
         # xwx_openid = request.headers.get('x-wx-openid')
         xwx_source = params['ToUserName']
         xwx_openid = params['FromUserName']
-        source = 
         info = {
             'ToUserName': xwx_openid,
             'FromUserName': xwx_source,
