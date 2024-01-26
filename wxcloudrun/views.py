@@ -65,25 +65,21 @@ def get_count():
     counter = Counters.query.filter(Counters.id == 1).first()
     return make_succ_response(0) if counter is None else make_succ_response(counter.count)
 
-# 回复文本消息
-def send_text_message(access_token, user_id, content):
-    url = f"
-    data = {
-        "touser": user_id,
-        "msgtype": "text",
-        "text": {
-            "content": content
-        }
-    }
-    response = requests.post(url, json=data)
-    return response.json()
+# # 回复文本消息
+# def send_text_message(access_token, user_id, content):
+#     url = f"
+#     data = {
+#         "ToUserName": user_id,
+#         "msgtype": "text",
+#         "text": {
+#             "content": content
+#         }
+#     }
+#     response = requests.post(url, json=data)
+#     return response.json()
     
 @app.route("/wxreply", methods=["POST"])
 def wechat():
     data = request.get_json()
-    user_id = data["FromUserName"]
-    content = data["Content"]
-    reply = f"你发送了：{content}"
-    access_token = get_access_token(APP_ID, APP_SECRET)
-    send_text_message(access_token, user_id, reply)
+    print(data)
     return ""
