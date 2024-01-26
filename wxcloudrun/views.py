@@ -73,13 +73,13 @@ def get_wxreply():
 @app.route('/wxreply', methods=['POST'])
 def wxreply():
     params = request.get_json()
-    app.logger.info('\n\ninput=' + json.dumps(params))
     if 'action' in params and params['action'] == 'CheckContainerPath':
         data = json.dumps({'code': 200, 'data': {}})
         return Response(data, mimetype='application/json')
     else:
-        content = params['Content']
-        content = content.encode().decode('unicode_escape')
+        c1 = params['Content']
+        c2 = c1.encode().decode('unicode_escape')
+        app.logger.info('\n\nc1=' + c1 + ', c2=' + c2)
         xwx_source = params['ToUserName']
         xwx_openid = params['FromUserName']
         info = {
@@ -87,7 +87,7 @@ def wxreply():
             'FromUserName': xwx_source,
             'CreateTime': int(datetime.now().timestamp()),
             'MsgType': 'text',
-            'Content': content
+            'Content': c2
         }
         app.logger.info('\n\noutput=' + json.dumps(info))
         data = json.dumps(info, ensure_ascii=False).encode('utf-8')
