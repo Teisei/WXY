@@ -81,7 +81,7 @@ def get_count():
 def get_wxreply():
     return make_succ_empty_response()
 
-@app.route("/wxreply", methods=["POST"])
+@app.route('/wxreply', methods=["POST"])
 def wxreply():
     data = request.get_json()
     print(data)
@@ -90,7 +90,7 @@ def wxreply():
         'FromUserName': data['ToUserName'],
         'CreateTime': int(datetime.now().timestamp()),
         'MsgType': 'text',
-        'Content': data["Content"]
+        'Content': data['Content']
     }
     data = json.dumps({'code': 200, 'data': new_data})
     return Response(data, mimetype='application/json')
