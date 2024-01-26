@@ -7,7 +7,8 @@ from wxcloudrun.response import make_succ_empty_response, make_succ_response, ma
 import json
 from flask import Response
 import requests
-from apscheduler.schedulers.background import BackgroundScheduler
+import schedule
+import threading
 
 @app.route('/')
 def index():
@@ -93,25 +94,29 @@ def wxreply():
         data = json.dumps(info, ensure_ascii=False).encode('utf-8')
         return Response(data, mimetype='application/json')
 
+# 定时执行的任务逻辑
 def noticeJob():
-    # 定时执行的任务逻辑
     print("定时任务执行中...")
     # 发送post请求
-    sendTestMsg(content='定时任务')
-scheduler = BackgroundScheduler()
-scheduler.add_job(noticeJob, 'interval', seconds=20)  # 每隔1分钟执行一次任务
-scheduler.start()
+    sendMsg(content='定时任务')
+def run_schedule():
+    while True:
+        schedule.run_pending()
+        time.sleep(1)
+schedule.every(20).seconds.do(noticeJob)  # 每10秒执行一次job函数
+t = threading.Thread(target=run_schedule)
+t.start()
 
 def sendMsg(content, openid='o7Fnt6ZwAZFjOukruDoOOgJXUeA8'):
     url = 'http://api.weixin.qq.com/cgi-bin/message/custom/send'
     headers = {'Content-Type': 'application/json'}
-    info = {
+    data = {
         'touser': openid,
         'msgtype': 'text',
         'text': {
             'content': content
         }
     }
-    data = json.dumps(info, ensure_ascii=False).encode('utf-8')
     response = requests.post(url, headers=headers, json=data)
+    print('接口返回内容', response.text)
     return json.loads(response.text)
