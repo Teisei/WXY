@@ -76,7 +76,7 @@ def wxreply():
     if 'action' in params and params['action'] == 'CheckContainerPath':
         data = json.dumps({'code': 200, 'data': {}})
         return Response(data, mimetype='application/json')
-    elif:
+    else:
         print(params)
         info = {
             'ToUserName': params['x-wx-openid'],
