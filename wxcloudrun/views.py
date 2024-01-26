@@ -96,7 +96,7 @@ def wxreply():
 
 # 每10秒执行一次job函数
 def job():
-    print("定时任务执行中...")
+    print('定时任务执行中...')
     sendMsg(content='定时任务')
 def run_schedule():
     while True:
@@ -116,5 +116,5 @@ def sendMsg(content, openid='o7Fnt6ZwAZFjOukruDoOOgJXUeA8'):
         }
     }
     response = requests.post(url, headers=headers, json=data)
-    print('接口返回内容', response.text)
+    app.logger.info('接口返回内容:' + response.text)
     return json.loads(response.text)
