@@ -120,8 +120,9 @@ def run_schedule():
         schedule.run_pending()
         time.sleep(1)
 # schedule.every(12).hours.do(job)
-schedule.every().day.at("00:58:20").do(job)
 schedule.every().day.at("08:30:20").do(job)
+schedule.every().day.at("12:30:20").do(job)
+schedule.every().day.at("20:30:20").do(job)
 t = threading.Thread(target=run_schedule)
 t.start()
 def _sendMsg(content, openid='o7Fnt6ZwAZFjOukruDoOOgJXUeA8'):
@@ -134,7 +135,7 @@ def _sendMsg(content, openid='o7Fnt6ZwAZFjOukruDoOOgJXUeA8'):
             'content': content
         }
     }
-    data = json.dumps(info, ensure_ascii=False).encode('utf-8')
-    response = requests.post(url, headers=headers, json=data)
+    # data = json.dumps(info, ensure_ascii=False).encode('utf-8')
+    response = requests.post(url, headers=headers, json=info)
     app.logger.info('接口返回内容:' + response.text)
     return response.text
