@@ -95,6 +95,26 @@ def wxreply():
         data = json.dumps(info, ensure_ascii=False).encode('utf-8')
         return Response(data, mimetype='application/json')
 
+
+# --------------------------------------------------
+# 获取所有关注者openid
+# --------------------------------------------------
+@app.route('/testGetAllOpenIds', methods=['GET'])
+def testGetAllOpenIds():
+    return _getAllOpenIds()
+def _getAllOpenIds():
+    # url = 'http://api.weixin.qq.com/cgi-bin/message/custom/send'
+    url = 'http://api.weixin.qq.com/cgi-bin/user/get'
+    response = requests.get(url)
+    # data = response.json()  # 获取响应的JSON数据
+    # openid_list = data['data']['openid']  # 获取
+    
+    # for openid in openid_list:
+    #     print(openid)
+    # if response.status_code == 200:
+    # app.logger.info('接口返回内容:' + response.text)
+    return response
+
 # --------------------------------------------------
 # 主动发送消息
 # --------------------------------------------------
