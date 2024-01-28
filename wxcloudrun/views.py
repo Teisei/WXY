@@ -101,35 +101,39 @@ def wxreply():
 # --------------------------------------------------
 @app.route('/testGetAllOpenIds', methods=['GET'])
 def testGetAllOpenIds():
-    return _getAllOpenIds()
-def _getAllOpenIds():
-    # url = 'http://api.weixin.qq.com/cgi-bin/message/custom/send'
-    url = 'http://api.weixin.qq.com/cgi-bin/user/get'
-    response = requests.get(url)
-    data = response.json()  # 获取响应的JSON数据
+    data = _getAllOpenIds()
     res = json.dumps({'code': 200, 'data': data})
     return Response(res, mimetype='application/json')
+
 
 # --------------------------------------------------
 # 主动发送消息
 # --------------------------------------------------
-@app.route('/sendMsg', methods=['POST'])
-def send_msg():
+@app.route('/testSendMsgToOneUser', methods=['POST'])
+def testSendMsgToOneUser():
     params = request.get_json()
     openid = params['OpenId']
     content = params['Content'] # 已是中文
     text = _sendMsg(content, openid)
     data = json.dumps({'code': 200, 'data': {'text': text}})
     return Response(data, mimetype='application/json')
+@app.route('/testSendMsgToAllUsers', methods=['POST'])
+def testSendMsgToAllUsers():
+    params = request.get_json()
+    content = params['Content'] # 已是中文
+    data = _getAllOpenIds()
+    openid_list = data['data']['openid']
+    for openid in openid_list:
+        _sendMsgTry3(content, openid)
+    data = json.dumps({'code': 200, 'data': {'text': "success"}})
+    return Response(data, mimetype='application/json')
 
+# --------------------------------------------------
+# 定时执行
+# --------------------------------------------------
 # 每12小时执行一次job函数
 def job():
-    for i in range(0, 3):
-        try:
-            return _sendMsg(content='定时任务')
-        except Exception as e:
-            app.logger.info('call _sendMsg error......')
-    return "success"
+    return _sendMsgTry3("定时执行任务......")
 def run_schedule():
     while True:
         schedule.run_pending()
@@ -140,6 +144,24 @@ schedule.every().day.at("12:30:20").do(job)
 schedule.every().day.at("20:30:20").do(job)
 t = threading.Thread(target=run_schedule)
 t.start()
+
+
+# --------------------------------------------------
+# 内部方法
+# --------------------------------------------------
+def _getAllOpenIds():
+    # url = 'http://api.weixin.qq.com/cgi-bin/message/custom/send'
+    url = 'http://api.weixin.qq.com/cgi-bin/user/get'
+    response = requests.get(url)
+    data = response.json()  # 获取响应的JSON数据
+    return data
+
+def _sendMsgTry3(content, openid='o7Fnt6ZwAZFjOukruDoOOgJXUeA8'):
+    try:
+        return _sendMsg(content, openid)
+    except Exception as e:
+        app.logger.info('call _sendMsg error......')
+    return "success"
 def _sendMsg(content, openid='o7Fnt6ZwAZFjOukruDoOOgJXUeA8'):
     url = 'http://api.weixin.qq.com/cgi-bin/message/custom/send'
     headers = {'Content-Type': 'application/json'}
