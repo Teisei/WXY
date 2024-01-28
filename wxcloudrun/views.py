@@ -106,14 +106,9 @@ def _getAllOpenIds():
     # url = 'http://api.weixin.qq.com/cgi-bin/message/custom/send'
     url = 'http://api.weixin.qq.com/cgi-bin/user/get'
     response = requests.get(url)
-    # data = response.json()  # 获取响应的JSON数据
-    # openid_list = data['data']['openid']  # 获取
-    
-    # for openid in openid_list:
-    #     print(openid)
-    # if response.status_code == 200:
-    # app.logger.info('接口返回内容:' + response.text)
-    return response
+    data = response.json()  # 获取响应的JSON数据
+    res = json.dumps({'code': 200, 'data': data})
+    return Response(res, mimetype='application/json')
 
 # --------------------------------------------------
 # 主动发送消息
