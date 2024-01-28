@@ -11,6 +11,11 @@ import requests
 import schedule
 import threading
 
+RECOMMEND_CONTENT = "<a href='https://sl.mbookcn.com/cty/2c88f1c0-20231108154446373 '>👙美女姐姐当他还是瞎子，毫不避讳，谁知吃了大亏……</a> \r\n \r\n <a href='https://sl.mbookcn.com/cty/dc2b9b44-20231101105831855 '>️㊙️村花山坡误食野蘑菇，小兽医：机会来了！ </a> \r\n \r\n <a href='https://sl.mbookcn.com/cty/3b6201af-20231117170959906 '>️㊙️32岁女领导离婚8次，升职内幕令人咋舌！</a> \r\n \r\n👆点蓝字，看好书！👆"
+
+BONUS_CONTENT = "<a href='https://wx9bd148211d90a3ff.mp.goinbook.com/index.html#/pages/mine/sign/index?sld=20231224153552000793'>👄亲亲，你的补贴奖励即将失效！点我存入账户......</a>"
+
+
 @app.route('/')
 def index():
     """
@@ -74,6 +79,10 @@ def get_wxreply():
     data = json.dumps({'code': 200, 'data': {}})
     return Response(data, mimetype='application/json')
 
+
+# --------------------------------------------------
+# 被动回复
+# --------------------------------------------------
 @app.route('/wxreply', methods=['POST'])
 def wxreply():
     params = request.get_json()
@@ -89,12 +98,21 @@ def wxreply():
             'FromUserName': xwx_source,
             'CreateTime': int(datetime.now().timestamp()),
             'MsgType': 'text',
-            'Content': content_as_chinese
+            'Content': _wxreply(content_as_chinese)
         }
         app.logger.info('\n\noutput=' + json.dumps(info))
         data = json.dumps(info, ensure_ascii=False).encode('utf-8')
         return Response(data, mimetype='application/json')
 
+def _wxreply(content):
+    if content == '1':
+        # 回复1发送小说推荐
+        return RECOMMEND_CONTENT
+    elif content == '8':
+        # TODO：改成图文
+        return BONUS_CONTENT
+    else:
+        return RECOMMEND_CONTENT
 
 # --------------------------------------------------
 # 获取所有关注者openid
