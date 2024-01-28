@@ -135,7 +135,7 @@ def _sendMsg(content, openid='o7Fnt6ZwAZFjOukruDoOOgJXUeA8'):
             'content': content
         }
     }
-    # data = json.dumps(info, ensure_ascii=False).encode('utf-8')
-    response = requests.post(url, headers=headers, json=info)
+    request_body = json.dumps(info, ensure_ascii=False).encode('utf-8')
+    response = requests.post(url, headers=headers, data=request_body)
     app.logger.info('接口返回内容:' + response.text)
     return response.text
