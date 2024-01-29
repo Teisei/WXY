@@ -148,7 +148,7 @@ def _process_command(commands):
 
 
 current_path = os.getcwd()
-app.logger.info('\n\ncurrent_path=' + current_path)
+csv_file_path = os.path.join(current_path, 'wxcloudrun', 'UID_TO_CONTENT.csv')
 import csv
 csv_file_path = os.path.join(current_path, 'UID_TO_CONTENT.csv')
 with open(csv_file_path, 'r') as file:
