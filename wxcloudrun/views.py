@@ -97,7 +97,11 @@ def get_count():
 # --------------------------------------------------
 @app.route('/getNodels', methods=['GET'])
 def getNodels():
-    data = json.dumps(UID_TO_CONTENT, ensure_ascii=False).encode('utf-8')
+    info = {
+        'UID_TO_CONTENT': UID_TO_CONTENT,
+        'KEYWORD_TO_UIDS': KEYWORD_TO_UIDS
+    }
+    data = json.dumps(info, ensure_ascii=False).encode('utf-8')
     return Response(data, mimetype='application/json')
 
 @app.route('/addNodels', methods=['POST'])
@@ -116,11 +120,11 @@ def addNodels():
 def addIndexKeywordsToNodels():
     params = request.get_json()
     if 'indexKeywordsToNodels' in params:
-        KEYWORD_TO_UIDS = params['indexKeywordsToNodels']
+        for kw in params['indexKeywordsToNodels']:
+            KEYWORD_TO_UIDS[kw] = params['indexKeywordsToNodels'][kw]
         return make_succ_response(1)
     else:
         return make_err_response('action参数错误')
-
 
 # --------------------------------------------------
 # 被动回复
