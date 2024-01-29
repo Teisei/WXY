@@ -132,16 +132,17 @@ def addIndexKeywordsToNodels():
         return make_err_response('action参数错误')
 
 COMMAND_SPLITTER = '\t'
-def _process_command(command):
-    infos = command.strip().split(COMMAND_SPLITTER)
-    command_type = infos[0]
-    if '5201314add' == command_type:
-        title, desc, url = infos[1], infos[2], infos[3]
-        UID_TO_CONTENT[title] = [title, desc, url]
-        UPDATE_KEYWORD_TO_UIDS(title, [title]) # update index
-    if '5201314index' == command_type:
-        kw, uid = infos[1], infos[2]
-        UPDATE_KEYWORD_TO_UIDS(kw, [uid])  # update index
+def _process_command(commands):
+    for command in commands.split('\n'):
+        infos = command.strip().split(COMMAND_SPLITTER)
+        command_type = infos[0]
+        if '5201314add' == command_type:
+            title, desc, url = infos[1], infos[2], infos[3]
+            UID_TO_CONTENT[title] = [title, desc, url]
+            UPDATE_KEYWORD_TO_UIDS(title, [title]) # update index
+        if '5201314index' == command_type:
+            kw, uid = infos[1], infos[2]
+            UPDATE_KEYWORD_TO_UIDS(kw, [uid])  # update index
     return "success"
 
 
