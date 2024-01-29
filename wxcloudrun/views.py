@@ -10,6 +10,7 @@ from flask import Response
 import requests
 import schedule
 import threading
+import os
 
 FIRST_CONTENT = '欢迎关注。\r\n 搜索关键词获取小说。比如“杨凡”、“盲人”、“按摩”等'
 
@@ -146,6 +147,18 @@ def _process_command(commands):
     return "success"
 
 
+current_path = os.getcwd()
+app.logger.info('\n\ncurrent_path=' + current_path)
+import csv
+csv_file_path = os.path.join(current_path, 'UID_TO_CONTENT.csv')
+with open(csv_file_path, 'r') as file:
+    # 创建CSV读取器
+    reader = csv.reader(file)
+    # 逐行读取CSV文件内容
+    for row in reader:
+        # 在这里处理每一行的数据
+        app.logger.info('\n\nprocess row =' + row)
+        _process_command(row)
 
 # --------------------------------------------------
 # 被动回复
@@ -180,7 +193,7 @@ def _wxreply(params):
     # 是否是管理员指令
     if 'Content' not in params or params['Content'] == '':
         return FIRST_CONTENT
-    elif  '5201314' in params['Content']:
+    elif '5201314' in params['Content']:
         return _process_command(params['Content'])
     elif params['Content'] == '1':
         # 回复1发送小说推荐
