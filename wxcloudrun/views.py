@@ -101,7 +101,7 @@ def getNodels():
     return Response(data, mimetype='application/json')
 
 @app.route('/addNodels', methods=['POST'])
-def getNodels():
+def addNodels():
     params = request.get_json()
     if not 'novels' in params:
         return make_err_response('action参数错误')
@@ -111,6 +111,15 @@ def getNodels():
             UID_TO_CONTENT[novel['title']] = [novel['title'], novel['desc'], novel['url']]
             succ = succ + 1
     return make_succ_response(succ)
+
+@app.route('/addIndexKeywordsToNodels', methods=['POST'])
+def addIndexKeywordsToNodels():
+    params = request.get_json()
+    if 'indexKeywordsToNodels' in params:
+        KEYWORD_TO_UIDS = params['indexKeywordsToNodels']
+        return make_succ_response(1)
+    else:
+        return make_err_response('action参数错误')
 
 
 # --------------------------------------------------
