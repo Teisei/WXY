@@ -131,19 +131,19 @@ def addIndexKeywordsToNodels():
     else:
         return make_err_response('action参数错误')
 
+COMMAND_SPLITTER = '###'
 def _process_command(command):
-    command_type = command.split('\t')[0]
+    infos = command.split(COMMAND_SPLITTER)
+    command_type = infos[0]
     if '5201314add' == command_type:
-        # 增加
-        infos = command.split('\t')[1].split('###')
-        title, desc, url = infos[0], infos[1], infos[2]
+        title, desc, url = infos[1], infos[2], infos[3]
         UID_TO_CONTENT[title] = [title, desc, url]
         UPDATE_KEYWORD_TO_UIDS(title, [title]) # update index
     if '5201314index' == command_type:
-        kw = command.split('\t')[1].split('###')[0]
-        uids = command.split('\t')[1].split('###')[1].split(',')
-        UPDATE_KEYWORD_TO_UIDS(kw, uids)  # update index
+        kw, uid = infos[1], infos[2]
+        UPDATE_KEYWORD_TO_UIDS(kw, [uid])  # update index
     return "success"
+
 
 
 # --------------------------------------------------
