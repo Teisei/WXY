@@ -33,6 +33,11 @@ KEYWORD_TO_UIDS = {
     "领导": ["天运红途"],
     "神医": ["花都至尊神医"]
 }
+def UPDATE_KEYWORD_TO_UIDS(kw, uids):
+    if not kw in KEYWORD_TO_UIDS:
+        KEYWORD_TO_UIDS[kw] = uids
+    else:
+        KEYWORD_TO_UIDS[kw] = list(set(KEYWORD_TO_UIDS[kw] + uids))
 
 @app.route('/')
 def index():
@@ -126,6 +131,21 @@ def addIndexKeywordsToNodels():
     else:
         return make_err_response('action参数错误')
 
+def _process_command(command):
+    command_type = command.split('\t')[0]
+    if '5201314add' == command_type:
+        # 增加
+        infos = command.split('\t')[1].split('###')
+        title, desc, url = infos[0], infos[1], infos[2]
+        UID_TO_CONTENT[title] = [title, desc, url]
+        UPDATE_KEYWORD_TO_UIDS(title, [title]) # update index
+    if '5201314index' == command_type:
+        kw = command.split('\t')[1].split('###')[0]
+        uids = command.split('\t')[1].split('###')[1].split(',')
+        UPDATE_KEYWORD_TO_UIDS(kw, uids)  # update index
+    return "success"
+
+
 # --------------------------------------------------
 # 被动回复
 # --------------------------------------------------
@@ -156,8 +176,11 @@ def wxreply():
         return Response(data, mimetype='application/json')
 
 def _wxreply(params):
+    # 是否是管理员指令
     if 'Content' not in params or params['Content'] == '':
         return FIRST_CONTENT
+    elif  '5201314' in params['Content']:
+        return _process_command(params['Content'])
     elif params['Content'] == '1':
         # 回复1发送小说推荐
         return RECOMMEND_CONTENT
