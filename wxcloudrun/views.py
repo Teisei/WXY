@@ -131,9 +131,9 @@ def addIndexKeywordsToNodels():
     else:
         return make_err_response('action参数错误')
 
-COMMAND_SPLITTER = '###'
+COMMAND_SPLITTER = '\t'
 def _process_command(command):
-    infos = command.split(COMMAND_SPLITTER)
+    infos = command.strip().split(COMMAND_SPLITTER)
     command_type = infos[0]
     if '5201314add' == command_type:
         title, desc, url = infos[1], infos[2], infos[3]
