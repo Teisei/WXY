@@ -136,11 +136,13 @@ def _wxreply(params):
 
 def _searchContentByKeyword(kw):
     if kw in KEYWORD_TO_UIDS:
-        uid = KEYWORD_TO_UIDS[kw]
-        title = UID_TO_CONTENT[uid][0]
-        desc = UID_TO_CONTENT[uid][1]
-        url = UID_TO_CONTENT[uid][2]
-        return "👉<a href='{}'>{}</a>".format(url, desc)
+        res = ''
+        for uid in KEYWORD_TO_UIDS[kw]:
+            title = UID_TO_CONTENT[uid][0]
+            desc = UID_TO_CONTENT[uid][1]
+            url = UID_TO_CONTENT[uid][2]
+            res = res + "👉<a href='{}'>{}</a> \r\n \r\n".format(url, desc)
+        return res
     else:
         return "无相关内容\r\n \r\n" + RECOMMEND_CONTENT
 
