@@ -92,15 +92,35 @@ def get_count():
     counter = Counters.query.filter(Counters.id == 1).first()
     return make_succ_response(0) if counter is None else make_succ_response(counter.count)
 
-@app.route('/wxreply', methods=['GET'])
-def get_wxreply():
-    data = json.dumps({'code': 200, 'data': {}})
+# --------------------------------------------------
+# 查询当前内容
+# --------------------------------------------------
+@app.route('/getNodels', methods=['GET'])
+def getNodels():
+    data = json.dumps(UID_TO_CONTENT, ensure_ascii=False).encode('utf-8')
     return Response(data, mimetype='application/json')
+
+@app.route('/addNodels', methods=['POST'])
+def getNodels():
+    params = request.get_json()
+    if not 'novels' in params:
+        return make_err_response('action参数错误')
+    succ = 0
+    for novel in params['novels']:
+        if 'title' in novel and 'desc' in novel and 'url' in novel:
+            UID_TO_CONTENT[novel['title']] = [novel['title'], novel['desc'], novel['url']]
+            succ = succ + 1
+    return make_succ_response(succ)
 
 
 # --------------------------------------------------
 # 被动回复
 # --------------------------------------------------
+@app.route('/wxreply', methods=['GET'])
+def get_wxreply():
+    data = json.dumps({'code': 200, 'data': {}})
+    return Response(data, mimetype='application/json')
+
 @app.route('/wxreply', methods=['POST'])
 def wxreply():
     params = request.get_json()
