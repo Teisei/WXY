@@ -149,16 +149,13 @@ def _process_command(commands):
 
 current_path = os.getcwd()
 app.logger.info('\n\ncurrent_path=' + current_path)
-import csv
 csv_file_path = os.path.join(current_path, 'wxcloudrun', 'UID_TO_CONTENT.csv')
 with open(csv_file_path, 'r') as file:
-    # 创建CSV读取器
-    reader = csv.reader(file)
-    # 逐行读取CSV文件内容
-    for row in reader:
+    lines = file.readlines()
+    for line in lines:
         # 在这里处理每一行的数据
-        app.logger.info('\n\nprocess row =' + row)
-        _process_command(row)
+        app.logger.info('\n\nprocess row =' + line)
+        _process_command(line)
 
 # --------------------------------------------------
 # 被动回复
