@@ -148,9 +148,9 @@ def _process_command(commands):
 
 
 current_path = os.getcwd()
-csv_file_path = os.path.join(current_path, 'wxcloudrun', 'UID_TO_CONTENT.csv')
+app.logger.info('\n\ncurrent_path=' + current_path)
 import csv
-csv_file_path = os.path.join(current_path, 'UID_TO_CONTENT.csv')
+csv_file_path = os.path.join(current_path, 'wxcloudrun', 'UID_TO_CONTENT.csv')
 with open(csv_file_path, 'r') as file:
     # 创建CSV读取器
     reader = csv.reader(file)
