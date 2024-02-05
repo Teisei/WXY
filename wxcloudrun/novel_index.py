@@ -21,16 +21,7 @@ app.logger.info('\n\nindexdir=' + current_path)
 ix = open_dir(indexdir, indexname='indexname')
 
 # 创建一个检索器
-writer = ix.writer()
 searcher = ix.searcher()
-def add_document(title, desc, url):
-    writer.add_document(title=title, desc=desc, url=url)
-    writer.commit()
-
-def del_document(title):
-    writer.delete_by_term("title", title, searcher)
-    writer.commit()
-
 
 def search_by_keyword(keyword):
     # 单关键词搜索
