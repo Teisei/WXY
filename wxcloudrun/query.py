@@ -23,7 +23,7 @@ ix = open_dir(indexdir, indexname='indexname')
 # 创建一个检索器
 searcher = ix.searcher()
 
-def query_by_keyword(keyword):
+def search_by_keyword(keyword):
     # 单关键词搜索
     # 方式1： results = searcher.find("desc", "仙侠")
     # 方式2：parser = QueryParser("title", ix.schema).parse("手册")
@@ -37,7 +37,7 @@ def query_by_keyword(keyword):
 
 if __name__ == '__main__':
     keyword = "诡秘之主"
-    results = query_by_keyword(keyword)
+    results = search_by_keyword(keyword)
     app.logger.info('\n一共发现%d份文档。' % len(results))
     for i in range(min(10, len(results))):
         app.logger.info(json.dumps(results[i].fields(), ensure_ascii=False))

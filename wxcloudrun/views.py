@@ -2,6 +2,7 @@ from datetime import datetime
 import time
 from flask import render_template, request
 from run import app
+from wxcloudrun import query
 from wxcloudrun.dao import delete_counterbyid, query_counterbyid, insert_counter, update_counterbyid
 from wxcloudrun.model import Counters
 from wxcloudrun.response import make_succ_empty_response, make_succ_response, make_err_response
@@ -202,13 +203,11 @@ def _wxreply(params):
         return _searchContentByKeyword(params['Content'])
 
 def _searchContentByKeyword(kw):
-    if kw in KEYWORD_TO_UIDS:
+    results = query.search_by_keyword(kw)
+    if results and len(results) > 0:
         res = ''
-        for uid in KEYWORD_TO_UIDS[kw]:
-            title = UID_TO_CONTENT[uid][0]
-            desc = UID_TO_CONTENT[uid][1]
-            url = UID_TO_CONTENT[uid][2]
-            res = res + "👉<a href='{}'>{}</a> \r\n \r\n".format(url, desc)
+        for row in results:
+            res = res + "👉<a href='{}'>{}</a> \r\n \r\n".format(row.fields()['desc'], row.fields()['url'])
         return res
     else:
         return "无相关内容\r\n \r\n" + RECOMMEND_CONTENT
