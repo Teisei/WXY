@@ -33,4 +33,5 @@ def build():
     writer.commit()
 
 if __name__ == '__main__':
-    build()
+    # build()
+    print('test')

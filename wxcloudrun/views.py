@@ -13,20 +13,22 @@ import schedule
 import threading
 import os
 
-FIRST_CONTENT = '欢迎关注。\r\n 搜索关键词获取小说。比如“杨凡”、“盲人”、“按摩”等'
+FIRST_CONTENT = '欢迎关注。\r\n 搜索关键词获取小说。比如“斗破苍穹”、“按摩”、“魔法”等'
 
-RECOMMEND_CONTENT = """
-<a href='https://sl.mbookcn.com/cty/2c88f1c0-20231108154446373 '>👙美女姐姐当他还是瞎子，毫不避讳，谁知吃了大亏……</a> \r\n \r\n 
-<a href='https://sl.mbookcn.com/cty/dc2b9b44-20231101105831855 '>️㊙️村花山坡误食野蘑菇，小兽医：机会来了！ </a> \r\n \r\n 
-<a href='https://sl.mbookcn.com/cty/3b6201af-20231117170959906 '>️㊙️32岁女领导离婚8次，升职内幕令人咋舌！</a> \r\n \r\n
-👆点蓝字，看好书！👆
-"""
-RECOMMEND_CONTENT = """
-<a = href='https://wx26e1145c6c42ac44.wxcp.qidian.com/wxfxmswl58959/read.html?cbid=27463709004927406'>🛸星海漫游，时空穿梭，机械科技，目标是未知的星辰大海！</a> \r\n \r\n 
-<a = href='https://wx26e1145c6c42ac44.wxcp.qidian.com/wxfxmswl58959/read.html?cbid=23507468309034506'>🔱这里是属于斗气的世界，没有花俏艳丽的魔法，有的，仅仅是繁衍到巅峰的斗气！</a> \r\n \r\n
-<a = href='https://wx26e1145c6c42ac44.wxcp.qidian.com/wxfxmswl58959/read.html?cbid=14159563303723206'>🔮光明依旧照耀，神秘从未远离，这是一段“愚者”的传说。</a> \r\n \r\n
-👆点蓝字，看好书！👆
-"""
+RECOMMEND_CONTENT = {
+    '1': """
+        <a href='https://wx26e1145c6c42ac44.wxcp.qidian.com/wxfxmswl58959/read.html?cbid=27463709004927406'>🛸星海漫游，时空穿梭，机械科技，目标是未知的星辰大海！</a> \r\n \r\n 
+        <a href='https://wx26e1145c6c42ac44.wxcp.qidian.com/wxfxmswl58959/read.html?cbid=23507468309034506'>🔱这里是属于斗气的世界，没有花俏艳丽的魔法，有的，仅仅是繁衍到巅峰的斗气！</a> \r\n \r\n
+        <a href='https://wx26e1145c6c42ac44.wxcp.qidian.com/wxfxmswl58959/read.html?cbid=14159563303723206'>🔮光明依旧照耀，神秘从未远离，这是一段“愚者”的传说。</a> \r\n \r\n
+        👆点蓝字，看好书！👆
+    """,
+    '2': """
+        <a href='https://sl.mbookcn.com/cty/2c88f1c0-20231108154446373 '>👙美女姐姐当他还是瞎子，毫不避讳，谁知吃了大亏……</a> \r\n \r\n 
+        <a href='https://sl.mbookcn.com/cty/dc2b9b44-20231101105831855 '>️㊙️村花山坡误食野蘑菇，小兽医：机会来了！ </a> \r\n \r\n 
+        <a href='https://sl.mbookcn.com/cty/3b6201af-20231117170959906 '>️㊙️32岁女领导离婚8次，升职内幕令人咋舌！</a> \r\n \r\n
+        👆点蓝字，看好书！👆
+        """
+}
 
 BONUS_CONTENT = "<a href='https://wx9bd148211d90a3ff.mp.goinbook.com/index.html#/pages/mine/sign/index?sld=20231224153552000793'>🫰亲亲，你的补贴奖励即将失效！点我存入账户......</a>"
 
@@ -168,9 +170,9 @@ def _wxreply(params):
         return FIRST_CONTENT
     elif '5201314' in params['Content']:
         return _process_command(params['Content'])
-    elif params['Content'] == '1':
+    elif params['Content'] == '1' or params['Content'] == '2':
         # 回复1发送小说推荐
-        return RECOMMEND_CONTENT
+        return RECOMMEND_CONTENT[params['Content']]
     elif params['Content'] == '8':
         # TODO：改成图文
         return BONUS_CONTENT
