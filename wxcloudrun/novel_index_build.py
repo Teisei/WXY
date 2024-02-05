@@ -9,12 +9,13 @@ def build():
     # 创建schema, stored为True表示能够被检索
     schema = Schema(title=TEXT(stored=True, analyzer=ChineseAnalyzer()),
                     desc=TEXT(stored=True, analyzer=ChineseAnalyzer()),
-                    url=ID(stored=True)
+                    url=ID(stored=True),
+                    author=ID(stored=True)
                     )
 
     # 解析poem.csv文件
     with open('UID_TO_CONTENT.csv', 'r', encoding='utf-8') as f:
-        texts = [_.strip().split('\t')[1:4] for _ in f.readlines() if len(_.strip().split('\t')) == 4]
+        texts = [_.strip().split('\t')[1:5] for _ in f.readlines() if len(_.strip().split('\t')) == 5]
         print(texts)
 
     # 存储schema信息至indexdir目录
@@ -28,8 +29,8 @@ def build():
     # 按照schema定义信息，增加需要建立索引的文档
     writer = ix.writer()
     for i in range(1, len(texts)):
-        title, desc, url = texts[i]
-        writer.add_document(title=title, desc=desc, url=url)
+        title, desc, url, author = texts[i]
+        writer.add_document(title=title, desc=desc, url=url, author=author)
     writer.commit()
 
 if __name__ == '__main__':

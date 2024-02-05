@@ -198,7 +198,7 @@ def _searchContentByKeyword(kw):
             res = res + "<a href='{}'>加载更多【{}】内容</a>".format(search_url, kw)
             return res
     else:
-        return "👉<a href='{}'>🎁解锁【{}】内容</a>\r\n \r\n {}".format(search_url, kw, RECOMMEND_CONTENT['1'])
+        return "<a href='{}'>🎁解锁【{}】内容</a>\r\n \r\n ---其他精彩内容---\r\n{}".format(search_url, kw, RECOMMEND_CONTENT['1'])
 
 # --------------------------------------------------
 # 获取所有关注者openid

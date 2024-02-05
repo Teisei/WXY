@@ -8,11 +8,12 @@ from run import app
 import json
 import os
 
-# 创建schema, stored为True表示能够被检索
-schema = Schema(title=TEXT(stored=True, analyzer=ChineseAnalyzer()),
-                desc=TEXT(stored=True, analyzer=ChineseAnalyzer()),
-                url=ID(stored=False)
-                )
+# # 创建schema, stored为True表示能够被检索
+# schema = Schema(title=TEXT(stored=True, analyzer=ChineseAnalyzer()),
+#                 desc=TEXT(stored=True, analyzer=ChineseAnalyzer()),
+#                 url=ID(stored=False),
+#                 author=ID(stored=True)
+#                 )
 
 # 存储schema信息至indexdir目录
 current_path = os.getcwd()
