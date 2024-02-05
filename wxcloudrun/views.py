@@ -207,7 +207,7 @@ def _searchContentByKeyword(kw):
     if results and len(results) > 0:
         res = ''
         for row in results:
-            res = res + "👉<a href='{}'>{}</a> \r\n \r\n".format(row.fields()['desc'], row.fields()['url'])
+            res = res + "👉<a href='{}'>{}</a> \r\n \r\n".format(row.fields()['url'], row.fields()['desc'])
         return res
     else:
         return "无相关内容\r\n \r\n" + RECOMMEND_CONTENT
