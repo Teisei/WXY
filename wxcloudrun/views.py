@@ -15,9 +15,20 @@ import os
 
 FIRST_CONTENT = '欢迎关注。\r\n 搜索关键词获取小说。比如“杨凡”、“盲人”、“按摩”等'
 
-RECOMMEND_CONTENT = "<a href='https://sl.mbookcn.com/cty/2c88f1c0-20231108154446373 '>👙美女姐姐当他还是瞎子，毫不避讳，谁知吃了大亏……</a> \r\n \r\n <a href='https://sl.mbookcn.com/cty/dc2b9b44-20231101105831855 '>️㊙️村花山坡误食野蘑菇，小兽医：机会来了！ </a> \r\n \r\n <a href='https://sl.mbookcn.com/cty/3b6201af-20231117170959906 '>️㊙️32岁女领导离婚8次，升职内幕令人咋舌！</a> \r\n \r\n👆点蓝字，看好书！👆"
+RECOMMEND_CONTENT = """
+<a href='https://sl.mbookcn.com/cty/2c88f1c0-20231108154446373 '>👙美女姐姐当他还是瞎子，毫不避讳，谁知吃了大亏……</a> \r\n \r\n 
+<a href='https://sl.mbookcn.com/cty/dc2b9b44-20231101105831855 '>️㊙️村花山坡误食野蘑菇，小兽医：机会来了！ </a> \r\n \r\n 
+<a href='https://sl.mbookcn.com/cty/3b6201af-20231117170959906 '>️㊙️32岁女领导离婚8次，升职内幕令人咋舌！</a> \r\n \r\n
+👆点蓝字，看好书！👆
+"""
+RECOMMEND_CONTENT = """
+<a = href='https://wx26e1145c6c42ac44.wxcp.qidian.com/wxfxmswl58959/read.html?cbid=27463709004927406'>🛸星海漫游，时空穿梭，机械科技，目标是未知的星辰大海！</a> \r\n \r\n 
+<a = href='https://wx26e1145c6c42ac44.wxcp.qidian.com/wxfxmswl58959/read.html?cbid=23507468309034506'>🔱这里是属于斗气的世界，没有花俏艳丽的魔法，有的，仅仅是繁衍到巅峰的斗气！</a> \r\n \r\n
+<a = href='https://wx26e1145c6c42ac44.wxcp.qidian.com/wxfxmswl58959/read.html?cbid=14159563303723206'>🔮光明依旧照耀，神秘从未远离，这是一段“愚者”的传说。</a> \r\n \r\n
+👆点蓝字，看好书！👆
+"""
 
-BONUS_CONTENT = "<a href='https://wx9bd148211d90a3ff.mp.goinbook.com/index.html#/pages/mine/sign/index?sld=20231224153552000793'>👄亲亲，你的补贴奖励即将失效！点我存入账户......</a>"
+BONUS_CONTENT = "<a href='https://wx9bd148211d90a3ff.mp.goinbook.com/index.html#/pages/mine/sign/index?sld=20231224153552000793'>🫰亲亲，你的补贴奖励即将失效！点我存入账户......</a>"
 
 UID_TO_CONTENT = {
     "超品医尊": ["超品医尊", "村花深夜敲响【杨凡】的房门，支吾道：能不能帮个忙？", "https://sl.mbookcn.com/cty/2c88f1c0-20231108154446373"],
@@ -98,18 +109,6 @@ def getNodels():
     data = json.dumps(info, ensure_ascii=False).encode('utf-8')
     return Response(data, mimetype='application/json')
 
-@app.route('/addNodels', methods=['POST'])
-def addNodels():
-    params = request.get_json()
-    if not 'novels' in params:
-        return make_err_response('action参数错误')
-    succ = 0
-    for novel in params['novels']:
-        if 'title' in novel and 'desc' in novel and 'url' in novel:
-            UID_TO_CONTENT[novel['title']] = [novel['title'], novel['desc'], novel['url']]
-            succ = succ + 1
-    return make_succ_response(succ)
-
 COMMAND_SPLITTER = '\t'
 def _process_command(commands):
     for command in commands.split('\n'):
@@ -118,10 +117,9 @@ def _process_command(commands):
         if '5201314add' == command_type:
             title, desc, url = infos[1], infos[2], infos[3]
             UID_TO_CONTENT[title] = [title, desc, url]
-            novel_index.add_document(title, desc, url)
         if '5201314del' == command_type:
             title = infos[1]
-            novel_index.del_document(title)
+            del UID_TO_CONTENT[title]
     return "success"
 
 
@@ -180,6 +178,8 @@ def _wxreply(params):
         return _searchContentByKeyword(params['Content'])
 
 def _searchContentByKeyword(kw):
+    if kw in UID_TO_CONTENT:
+        return "👉<a href='{}'>{}</a> \r\n \r\n".format(UID_TO_CONTENT[kw]['url'], UID_TO_CONTENT[kw]['desc'])
     results = novel_index.search_by_keyword(kw)
     if results and len(results) > 0:
         res = ''
