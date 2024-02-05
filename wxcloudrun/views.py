@@ -176,17 +176,29 @@ def _wxreply(params):
         return _searchContentByKeyword(params['Content'])
 
 def _searchContentByKeyword(kw):
+    search_url = 'https://wx654c68c01309e111.wxcp.qidian.com/wxfxhzjy39518/search.html?wd={}'.format(urllib.parse.quote(kw))
     if kw in UID_TO_CONTENT:
-        return "👉<a href='{}'>{}</a> \r\n \r\n".format(UID_TO_CONTENT[kw]['url'], UID_TO_CONTENT[kw]['desc'])
+        # perfect match
+        return "👉{} \r\n \r\n 🚀{}".format(
+            "<a href='{}'>{}</a>".format(UID_TO_CONTENT[kw]['url'], UID_TO_CONTENT[kw]['desc']),
+            "<a href='{}'>加载更多【{}】内容</a>".format(search_url, kw)
+        )
     results = novel_index.search_by_keyword(kw)
     if results and len(results) > 0:
-        res = ''
-        for row in results:
-            res = res + "👉<a href='{}'>{}</a> \r\n \r\n".format(row.fields()['url'], row.fields()['desc'])
-        return res
+        if results[0].fields()['title'] == kw:
+            # perfect match
+            return "👉{} \r\n \r\n 🚀{}".format(
+                "<a href='{}'>{}</a>".format(results[0].fields()['url'], results[0].fields()['desc']),
+                "<a href='{}'>加载更多【{}】内容</a>".format(search_url, kw)
+            )
+        else:
+            res = ''
+            for row in results:
+                res = res + "👉<a href='{}'>{}</a> \r\n \r\n".format(row.fields()['url'], row.fields()['desc'])
+            res = res + "<a href='{}'>加载更多【{}】内容</a>".format(search_url, kw)
+            return res
     else:
-        search_url = 'https://wx654c68c01309e111.wxcp.qidian.com/wxfxhzjy39518/search.html?wd={}'.format(urllib.parse.quote(kw))
-        return "👉<a href='{}'>🚀加载更多精彩内容</a>\r\n \r\n".format(search_url) + RECOMMEND_CONTENT['1']
+        return "👉<a href='{}'>🎁解锁【{}】内容</a>\r\n \r\n {}".format(search_url, kw) + RECOMMEND_CONTENT['1']
 
 # --------------------------------------------------
 # 获取所有关注者openid
