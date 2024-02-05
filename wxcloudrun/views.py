@@ -12,6 +12,7 @@ import requests
 import schedule
 import threading
 import os
+import urllib.parse
 
 FIRST_CONTENT = '欢迎关注。\r\n 搜索关键词获取小说。比如“斗破苍穹”、“按摩”、“魔法”等'
 
@@ -186,7 +187,8 @@ def _searchContentByKeyword(kw):
             res = res + "👉<a href='{}'>{}</a> \r\n \r\n".format(row.fields()['url'], row.fields()['desc'])
         return res
     else:
-        return "无相关内容\r\n \r\n" + RECOMMEND_CONTENT
+        search_url = 'https://wx654c68c01309e111.wxcp.qidian.com/wxfxhzjy39518/search.html?wd={}'.format(urllib.parse.quote(kw))
+        return "👉<a href='{}'>🚀加载更多精彩内容</a>\r\n \r\n".format(search_url) + RECOMMEND_CONTENT['1']
 
 # --------------------------------------------------
 # 获取所有关注者openid
