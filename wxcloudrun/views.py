@@ -2,7 +2,7 @@ from datetime import datetime
 import time
 from flask import render_template, request
 from run import app
-from wxcloudrun import query
+from wxcloudrun import novel_index
 from wxcloudrun.dao import delete_counterbyid, query_counterbyid, insert_counter, update_counterbyid
 from wxcloudrun.model import Counters
 from wxcloudrun.response import make_succ_empty_response, make_succ_response, make_err_response
@@ -28,18 +28,6 @@ UID_TO_CONTENT = {
     "美人无双": ["美人无双", "美人无双", ""],
     "最强上门女婿": ["最强上门女婿", "最强上门女婿", ""],
 }
-
-KEYWORD_TO_UIDS = {
-    "杨凡": ["超品医尊"],
-    "按摩": ["超品医尊"],
-    "领导": ["天运红途"],
-    "神医": ["花都至尊神医"]
-}
-def UPDATE_KEYWORD_TO_UIDS(kw, uids):
-    if not kw in KEYWORD_TO_UIDS:
-        KEYWORD_TO_UIDS[kw] = uids
-    else:
-        KEYWORD_TO_UIDS[kw] = list(set(KEYWORD_TO_UIDS[kw] + uids))
 
 @app.route('/')
 def index():
@@ -105,8 +93,7 @@ def get_count():
 @app.route('/getNodels', methods=['GET'])
 def getNodels():
     info = {
-        'UID_TO_CONTENT': UID_TO_CONTENT,
-        'KEYWORD_TO_UIDS': KEYWORD_TO_UIDS
+        'UID_TO_CONTENT': UID_TO_CONTENT
     }
     data = json.dumps(info, ensure_ascii=False).encode('utf-8')
     return Response(data, mimetype='application/json')
@@ -123,16 +110,6 @@ def addNodels():
             succ = succ + 1
     return make_succ_response(succ)
 
-@app.route('/addIndexKeywordsToNodels', methods=['POST'])
-def addIndexKeywordsToNodels():
-    params = request.get_json()
-    if 'indexKeywordsToNodels' in params:
-        for kw in params['indexKeywordsToNodels']:
-            KEYWORD_TO_UIDS[kw] = params['indexKeywordsToNodels'][kw]
-        return make_succ_response(1)
-    else:
-        return make_err_response('action参数错误')
-
 COMMAND_SPLITTER = '\t'
 def _process_command(commands):
     for command in commands.split('\n'):
@@ -141,10 +118,10 @@ def _process_command(commands):
         if '5201314add' == command_type:
             title, desc, url = infos[1], infos[2], infos[3]
             UID_TO_CONTENT[title] = [title, desc, url]
-            UPDATE_KEYWORD_TO_UIDS(title, [title]) # update index
-        if '5201314index' == command_type:
-            kw, uid = infos[1], infos[2]
-            UPDATE_KEYWORD_TO_UIDS(kw, [uid])  # update index
+            novel_index.add_document(title, desc, url)
+        if '5201314del' == command_type:
+            title = infos[1]
+            novel_index.del_document(title)
     return "success"
 
 
@@ -203,7 +180,7 @@ def _wxreply(params):
         return _searchContentByKeyword(params['Content'])
 
 def _searchContentByKeyword(kw):
-    results = query.search_by_keyword(kw)
+    results = novel_index.search_by_keyword(kw)
     if results and len(results) > 0:
         res = ''
         for row in results:
