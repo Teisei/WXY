@@ -1,4 +1,4 @@
-# Copyright 2008 Matt Chaput. All rights reserved.
+# Copyright 2012 Matt Chaput. All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -25,25 +25,8 @@
 # those of the authors and should not be interpreted as representing official
 # policies, either expressed or implied, of Matt Chaput.
 
-__version__ = (2, 7, 4)
 
+def default_codec(*args, **kwargs):
+    from whoosh.codec.whoosh3 import W3Codec
 
-def versionstring(build=True, extra=True):
-    """Returns the version number of Whoosh as a string.
-
-    :param build: Whether to include the build number in the string.
-    :param extra: Whether to include alpha/beta/rc etc. tags. Only
-        checked if build is True.
-    :rtype: str
-    """
-
-    if build:
-        first = 3
-    else:
-        first = 2
-
-    s = ".".join(str(n) for n in __version__[:first])
-    if build and extra:
-        s += "".join(str(n) for n in __version__[3:])
-
-    return s
+    return W3Codec(*args, **kwargs)

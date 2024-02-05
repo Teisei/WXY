@@ -1,4 +1,4 @@
-# Copyright 2008 Matt Chaput. All rights reserved.
+# Copyright 2007 Matt Chaput. All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -25,25 +25,55 @@
 # those of the authors and should not be interpreted as representing official
 # policies, either expressed or implied, of Matt Chaput.
 
-__version__ = (2, 7, 4)
+import sys
+from struct import Struct, calcsize
 
 
-def versionstring(build=True, extra=True):
-    """Returns the version number of Whoosh as a string.
+IS_LITTLE = sys.byteorder == "little"
 
-    :param build: Whether to include the build number in the string.
-    :param extra: Whether to include alpha/beta/rc etc. tags. Only
-        checked if build is True.
-    :rtype: str
-    """
+_INT_SIZE = calcsize("!i")
+_SHORT_SIZE = calcsize("!H")
+_LONG_SIZE = calcsize("!Q")
+_FLOAT_SIZE = calcsize("!f")
+_DOUBLE_SIZE = calcsize("!d")
 
-    if build:
-        first = 3
-    else:
-        first = 2
+_byte_struct = Struct("!B")
+_sbyte_struct = Struct("!b")
+_ushort_struct = Struct("!H")
+_int_struct = Struct("!i")
+_uint_struct = Struct("!I")
+_long_struct = Struct("!q")
+_ulong_struct = Struct("!Q")
+_float_struct = Struct("!f")
+_double_struct = Struct("!d")
+_ushort_le_struct = Struct("<H")
+_uint_le_struct = Struct("<I")
 
-    s = ".".join(str(n) for n in __version__[:first])
-    if build and extra:
-        s += "".join(str(n) for n in __version__[3:])
+pack_byte = _byte_struct.pack
+pack_sbyte = _sbyte_struct.pack
+pack_ushort = _ushort_struct.pack
+pack_int = _int_struct.pack
+pack_uint = _uint_struct.pack
+pack_long = _long_struct.pack
+pack_ulong = _ulong_struct.pack
+pack_float = _float_struct.pack
+pack_double = _double_struct.pack
+pack_ushort_le = _ushort_le_struct.pack
+pack_uint_le = _uint_le_struct.pack
 
-    return s
+unpack_byte = _byte_struct.unpack  # ord() might be faster
+unpack_sbyte = _sbyte_struct.unpack
+unpack_ushort = _ushort_struct.unpack
+unpack_int = _int_struct.unpack
+unpack_uint = _uint_struct.unpack
+unpack_long = _long_struct.unpack
+unpack_ulong = _ulong_struct.unpack
+unpack_float = _float_struct.unpack
+unpack_double = _double_struct.unpack
+unpack_ushort_le = _ushort_le_struct.unpack
+unpack_uint_le = _uint_le_struct.unpack
+
+if sys.version_info[0] < 3:
+    emptybytes = ""
+else:
+    emptybytes = "".encode("latin-1")
