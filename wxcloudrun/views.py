@@ -33,13 +33,10 @@ RECOMMEND_CONTENT = {
 BONUS_CONTENT = "<a href='https://wx9bd148211d90a3ff.mp.goinbook.com/index.html#/pages/mine/sign/index?sld=20231224153552000793'>🫰亲亲，你的补贴奖励即将失效！点我存入账户......</a>"
 
 UID_TO_CONTENT = {
-    "超品医尊": ["超品医尊", "村花深夜敲响【杨凡】的房门，支吾道：能不能帮个忙？", "https://sl.mbookcn.com/cty/2c88f1c0-20231108154446373"],
-    "一世神医": ["一世神医", "一眼便知姑娘病情，治疗手法竟是要她", ""],
-    "天运红途": ["天运红途", "32岁女领导离婚8次，升职内幕令人咋舌！", "https://sl.mbookcn.com/cty/3b6201af-20231117170959906"],
-    "少年青衣": ["少年青衣", "少年青衣", ""],
-    "花都至尊神医": ["花都至尊神医", "花都至尊神医", "https://sl.mbookcn.com/cty/dc2b9b44-20231101105831855"],
-    "美人无双": ["美人无双", "美人无双", ""],
-    "最强上门女婿": ["最强上门女婿", "最强上门女婿", ""],
+    "超品医尊": {'title':"超品医尊", 'desc':"村花深夜敲响【杨凡】的房门，支吾道：能不能帮个忙？", 'url':"https://sl.mbookcn.com/cty/2c88f1c0-20231108154446373"},
+    "天运红途": {'title':"天运红途", 'desc':"32岁女领导离婚8次，升职内幕令人咋舌！", 'url':"https://sl.mbookcn.com/cty/3b6201af-20231117170959906"},
+    "花都至尊神医": {'title':"花都至尊神医", 'desc':"花都至尊神医", 'url':"https://sl.mbookcn.com/cty/dc2b9b44-20231101105831855"},
+    "最强上门女婿": {'title':"最强上门女婿", 'desc':"最强上门女婿", 'url':""},
 }
 
 @app.route('/')
@@ -118,7 +115,7 @@ def _process_command(commands):
         command_type = infos[0]
         if '5201314add' == command_type:
             title, desc, url = infos[1], infos[2], infos[3]
-            UID_TO_CONTENT[title] = [title, desc, url]
+            UID_TO_CONTENT[title] = {'title': title, 'desc': desc, 'url': url}
         if '5201314del' == command_type:
             title = infos[1]
             del UID_TO_CONTENT[title]
