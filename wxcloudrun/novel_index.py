@@ -17,7 +17,7 @@ schema = Schema(title=TEXT(stored=True, analyzer=ChineseAnalyzer()),
 # 存储schema信息至indexdir目录
 current_path = os.getcwd()
 indexdir = os.path.join(current_path, 'wxcloudrun', 'indexdir/')
-app.logger.info('\n\nindexdir=' + current_path)
+app.logger.info('\n\nindexdir=' + indexdir)
 ix = open_dir(indexdir, indexname='indexname')
 
 # 创建一个检索器

@@ -23,8 +23,7 @@ def build():
         os.mkdir(indexdir)
         # 使用create_in方法创建索引，index_path为索引路径，schema为前面定义的索引字段，indexname为索引名称（根据需要进行修改）
         ix = create_in(indexdir, schema=schema, indexname='indexname')
-    else:
-        ix = open_dir(indexdir, indexname='indexname')
+
     #
     # 按照schema定义信息，增加需要建立索引的文档
     writer = ix.writer()
