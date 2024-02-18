@@ -29,7 +29,7 @@ def search_by_keyword(keyword):
     # 方式1： results = searcher.find("desc", "仙侠")
     # 方式2：parser = QueryParser("title", ix.schema).parse("手册")
     # 多关键词同时搜索
-    parser = MultifieldParser(["title", 'desc'], ix.schema).parse(keyword)
+    parser = MultifieldParser(["title", 'desc', 'author'], ix.schema).parse(keyword)
     # 对结果进行排序
     facet = FieldFacet("title", reverse=True)
     # limit为搜索结果的限制，默认为10，None为不限制。sortedby为排序规则
