@@ -180,7 +180,7 @@ def _searchContentByKeyword(kw):
     if kw in UID_TO_CONTENT:
         # perfect match
         return "👉{} \r\n \r\n 🚀{}".format(
-            "<a href='{}'>{}</a>".format(UID_TO_CONTENT[kw]['url'], UID_TO_CONTENT[kw]['desc']),
+            "<a href='{}'>《{}》{}</a>".format(UID_TO_CONTENT[kw]['url'], UID_TO_CONTENT[kw]['title'], UID_TO_CONTENT[kw]['desc']),
             "<a href='{}'>加载更多【{}】内容</a>".format(search_url, kw)
         )
     results = novel_index.search_by_keyword(kw)
@@ -188,13 +188,13 @@ def _searchContentByKeyword(kw):
         if results[0].fields()['title'] == kw:
             # perfect match
             return "👉{} \r\n \r\n 🚀{}".format(
-                "<a href='{}'>{}</a>".format(results[0].fields()['url'], results[0].fields()['desc']),
+                "<a href='{}'>《{}》{}</a>".format(results[0].fields()['url'], results[0].fields()['title'], results[0].fields()['desc']),
                 "<a href='{}'>加载更多【{}】内容</a>".format(search_url, kw)
             )
         else:
             res = ''
             for row in results:
-                res = res + "👉<a href='{}'>{}</a> \r\n \r\n".format(row.fields()['url'], row.fields()['desc'])
+                res = res + "👉<a href='{}'>《{}》{}</a> \r\n \r\n".format(row.fields()['url'], row.fields()['title'], row.fields()['desc'])
             res = res + "<a href='{}'>加载更多【{}】内容</a>".format(search_url, kw)
             return res
     else:
