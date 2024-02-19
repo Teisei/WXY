@@ -175,12 +175,18 @@ def _wxreply(params):
     else:
         return _searchContentByKeyword(params['Content'])
 
+def _cut_setence(a, max_len=16):
+    if len(a) <= max_len:
+        return a
+    else:
+        return a[:max_len-1]+'...'
+
 def _searchContentByKeyword(kw):
     search_url = 'https://wx654c68c01309e111.wxcp.qidian.com/wxfxhzjy39518/search.html?wd={}'.format(urllib.parse.quote(kw))
     if kw in UID_TO_CONTENT:
         # perfect match
         return "👉{} \r\n \r\n 🚀{}".format(
-            "<a href='{}'>《{}》{}</a>".format(UID_TO_CONTENT[kw]['url'], UID_TO_CONTENT[kw]['title'], UID_TO_CONTENT[kw]['desc']),
+            "<a href='{}'>《{}》{}</a>".format(UID_TO_CONTENT[kw]['url'], UID_TO_CONTENT[kw]['title'], _cut_setence(UID_TO_CONTENT[kw]['desc'])),
             "<a href='{}'>加载更多【{}】内容</a>".format(search_url, kw)
         )
     results = novel_index.search_by_keyword(kw)
@@ -188,13 +194,13 @@ def _searchContentByKeyword(kw):
         if results[0].fields()['title'] == kw:
             # perfect match
             return "👉{} \r\n \r\n 🚀{}".format(
-                "<a href='{}'>《{}》{}</a>".format(results[0].fields()['url'], results[0].fields()['title'], results[0].fields()['desc']),
+                "<a href='{}'>《{}》{}</a>".format(results[0].fields()['url'], results[0].fields()['title'], _cut_setence(results[0].fields()['desc'])),
                 "<a href='{}'>加载更多【{}】内容</a>".format(search_url, kw)
             )
         else:
             res = ''
             for row in results:
-                res = res + "👉<a href='{}'>《{}》{}</a> \r\n \r\n".format(row.fields()['url'], row.fields()['title'], row.fields()['desc'])
+                res = res + "👉<a href='{}'>《{}》{}</a> \r\n \r\n".format(row.fields()['url'], row.fields()['title'], _cut_setence(row.fields()['desc']))
             res = res + "<a href='{}'>加载更多【{}】内容</a>".format(search_url, kw)
             return res
     else:
