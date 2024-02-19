@@ -15,7 +15,7 @@ def build():
 
     # 解析poem.csv文件
     with open('UID_TO_CONTENT.csv', 'r', encoding='utf-8') as f:
-        texts = [_.strip().split('\t')[1:5] for _ in f.readlines() if len(_.strip().split('\t')) == 5]
+        texts = [_.strip().split('###')[1:5] for _ in f.readlines() if len(_.strip().split('\t')) == 5]
         print(texts)
 
     # 存储schema信息至indexdir目录
