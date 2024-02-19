@@ -62,4 +62,5 @@ if __name__ == '__main__':
     # test_query('万古剑神')
     # test_query('修真路')
     # test_query('入修真路')
+    # test_query('总裁')
     print('test')

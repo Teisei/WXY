@@ -199,7 +199,8 @@ def _searchContentByKeyword(kw):
             )
         else:
             res = ''
-            for row in results:
+            for j in range(0, min(5, len(results))):
+                row = results[j]
                 res = res + "👉<a href='{}'>《{}》{}</a> \r\n \r\n".format(row.fields()['url'], row.fields()['title'], _cut_setence(row.fields()['desc']))
             res = res + "<a href='{}'>加载更多【{}】内容</a>".format(search_url, kw)
             return res
