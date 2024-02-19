@@ -2,6 +2,8 @@
 import os
 from whoosh.index import create_in, open_dir
 from whoosh.fields import *
+from whoosh.qparser import MultifieldParser
+from whoosh.sorting import FieldFacet
 from jieba.analyse import ChineseAnalyzer
 import json
 
@@ -13,9 +15,13 @@ def build():
                     author=ID(stored=True)
                     )
 
+    ITEM_LINE_SPLIT = "###"
+    texts = []
     # 解析poem.csv文件
     with open('UID_TO_CONTENT.csv', 'r', encoding='utf-8') as f:
-        texts = [_.strip().split('###')[1:5] for _ in f.readlines() if len(_.strip().split('\t')) == 5]
+        for _ in f.readlines():
+            if len(_.strip().split(ITEM_LINE_SPLIT)) == 5:
+                texts.append(_.strip().split(ITEM_LINE_SPLIT)[1:5])
         print(texts)
 
     # 存储schema信息至indexdir目录
@@ -33,6 +39,25 @@ def build():
         writer.add_document(title=title, desc=desc, url=url, author=author)
     writer.commit()
 
+def test_query(keyword = '一品狂医'):
+    current_path = os.getcwd()
+    indexdir = os.path.join(current_path, 'indexdir/')
+    ix = open_dir(indexdir, indexname='indexname')
+    searcher = ix.searcher()
+    parser = MultifieldParser(["title", 'desc', 'author'], ix.schema).parse(keyword)
+    facet = FieldFacet("title", reverse=True)
+    # limit为搜索结果的限制，默认为10，None为不限制。sortedby为排序规则
+    results = searcher.search(parser, limit=None, sortedby=facet, terms=True)
+    print('\n一共发现%d份文档。' % len(results))
+    for i in range(min(10, len(results))):
+        print((json.dumps(results[i].fields(), ensure_ascii=False)))
+    ix.close()
+
 if __name__ == '__main__':
     # build()
+    # test_query('都重生了谁谈恋爱啊')
+    # test_query('出名太快怎么办')
+    # test_query('万古神帝')
+    # test_query('斗气')
+    # test_query('万古剑神')
     print('test')
