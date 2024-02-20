@@ -2,22 +2,28 @@ EMOJIS1 = []
 EMOJIS1.append('🪽')
 EMOJIS1.append('⛩️')
 EMOJIS1.append('👹')
-EMOJIS1.append('🏯')
-EMOJIS1.append('🌪')
-EMOJIS1.append('🌑')
-EMOJIS1.append('🥋')
-EMOJIS1.append('📿')
-EMOJIS1.append('🥻')
-EMOJIS1.append('🪭')
-EMOJIS1.append('🪙')
-EMOJIS1.append('⚔️')
-EMOJIS1.append('🏹')
-EMOJIS1.append('🗡️')
-EMOJIS1.append('🛡️')
-EMOJIS1.append('🌊')
+# EMOJIS1.append('🌑') 偏黑，观感一般
+
+# EMOJIS1.append('🏯')
+# EMOJIS1.append('🌪')
+# EMOJIS1.append('🥋')
+# EMOJIS1.append('📿') # 难看
+# EMOJIS1.append('🥻') #太窄了
+# EMOJIS1.append('🪭') # 乱码
+# EMOJIS1.append('🪙')
+# EMOJIS1.append('⚔️')
+# EMOJIS1.append('🏹')
+# EMOJIS1.append('🗡️')
+# EMOJIS1.append('🛡️')
+# EMOJIS1.append('🌊')
 
 # 来源：https://www.emojiall.com/zh-hans/all-emojis
 EMOJI_ALL = '👹🪽⛩️☘️🍀🍂🏔️🌋🏜️🗻🏝️🏛️🏯🏰⛪🕌🕋🕍🛕♨️🌪️🌑🎎🎏🥋🎴🔮🎭👑👘📿🥻🪭🪇🪕🏮🕯️🪔📜📕💰💸🪙⚔️🏹🗡️🛡️🪝🧪🪞⚰️🗿⚱️🧿🪦🪬☪️☯️☮️🛐♈♌♋⚜️⚕️🔰🔱💠🏴‍☠️🥷🧠👀👁️🦾✍️🦴🫁👽👻👁️‍🗨️🐾🐈‍⬛🪶🕸️🕷️🏫🏥🌁🌄🌃🌆🌉🎪🎡🚨🚂🚇🧳🛸🛎️⌚⏳🕘🕰️🎃🎐🃏🧸🪁🪆🪄🎨👓👜👝💾🎞️📹📺📼📷🎥🔍🔎🔦🕯️📃📜📰🗞️✉️📦📮🖋️📆📐💼📎🗄️🔒🗝️🧪💉🩸💊💰💴💳💵💶💷💸🧾🪙✏️✒️📝🖊️🖋️🖌️🖍️☢️🔞🚫☣️⛔⭐❄️☂️☀️☁️🌊💡🫵🤟🫰🤞💀☠️👅👄🫦👙㊙️🈲🏳️🏴🚩🏳️‍🌈🎌🏁🥷🧙🧙‍♂️🧙‍♀️🧚🧚‍♂️🧚‍♀️🧜🧜‍♂️🧜‍♀️🧝🧝‍♂️🧝‍♀️🧞🧞‍♂️🧞‍♀️🏇⛷️🏂🏄🏄‍♂️🏄‍♀️🏊🏊‍♂️🏊‍♀️⛹️⛹️‍♂️⛹️‍♀️🤹🤹‍♂️🤹‍♀️🧘🧘‍♂️🧘‍♀️'
 EMOJIS_BY_TAG = {
-    '玄幻': EMOJIS1
+    '玄幻': ['🪽', '👹', '🌪', '🌊', '🎴'],
+    '奇幻': ['🪽', '👹', '🌪', '🌊', '🎴'],
+    '武侠': ['⛩️', '🥋', '🏹', '⚔️', '🪕'],
+    '仙侠': ['🪽', '👹', '🌪', '🌊', '🎴'],
+    '都市': ['🕋', '💵', '🃏', '🧸', '🎡'],
+    '悬疑': ['🔍', '🧿', '🗿', '🕘', '🧠', '🧸', '🪶']
 }
