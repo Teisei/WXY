@@ -107,17 +107,20 @@ def getNodels():
     data = json.dumps(info, ensure_ascii=False).encode('utf-8')
     return Response(data, mimetype='application/json')
 
-COMMAND_SPLITTER = '\t'
+COMMAND_SPLITTER = '###'
 def _process_command(commands):
-    for command in commands.split('\n'):
-        infos = command.strip().split(COMMAND_SPLITTER)
-        command_type = infos[0]
-        if '5201314add' == command_type:
-            title, desc, url = infos[1], infos[2], infos[3]
-            UID_TO_CONTENT[title] = {'title': title, 'desc': desc, 'url': url}
-        if '5201314del' == command_type:
-            title = infos[1]
-            del UID_TO_CONTENT[title]
+    try:
+        for command in commands.split('\n'):
+            infos = command.strip().split(COMMAND_SPLITTER)
+            command_type = infos[0]
+            if '5201314add' == command_type:
+                title, desc, url = infos[1], infos[2], infos[3]
+                UID_TO_CONTENT[title] = {'title': title, 'desc': desc, 'url': url}
+            if '5201314del' == command_type:
+                title = infos[1]
+                del UID_TO_CONTENT[title]
+    except Exception as e:
+        return "error"
     return "success"
 
 current_path = os.getcwd()
