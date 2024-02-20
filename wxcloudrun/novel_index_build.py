@@ -16,13 +16,25 @@ def build():
                     )
 
     ITEM_LINE_SPLIT = "###"
+    uid_list = []
     texts = []
     # 解析poem.csv文件
-    with open('UID_TO_CONTENT.csv', 'r', encoding='utf-8') as f:
-        for _ in f.readlines():
-            if len(_.strip().split(ITEM_LINE_SPLIT)) == 5:
-                texts.append(_.strip().split(ITEM_LINE_SPLIT)[1:5])
-        print(texts)
+    indexdata_path = 'indexdata'
+    for root, dirs, files in os.walk(indexdata_path):
+        for file in files:
+            file_path = os.path.join(root, file)
+            print(file_path)
+            with open(file_path, 'r', encoding='utf-8') as f:
+                for _ in f.readlines():
+                    if len(_.strip().split(ITEM_LINE_SPLIT)) == 5:
+                        arr = _.strip().split(ITEM_LINE_SPLIT)
+                        uid = '{}###{}'.format(arr[1], arr[-1])
+                        if not uid in uid_list:
+                            texts.append(arr[1:5])
+                            uid_list.append(uid)
+                        else:
+                            print('find ' + uid)
+        print(len(texts))
 
     # 存储schema信息至indexdir目录
     indexdir = 'indexdir/'
@@ -48,19 +60,24 @@ def test_query(keyword = '一品狂医'):
     facet = FieldFacet("title", reverse=True)
     # limit为搜索结果的限制，默认为10，None为不限制。sortedby为排序规则
     results = searcher.search(parser, limit=None, sortedby=facet, terms=True)
-    print('\n一共发现%d份文档。' % len(results))
+    print('\n一共发现{}份【{}】文档。'.format(len(results), keyword))
     for i in range(min(10, len(results))):
         print((json.dumps(results[i].fields(), ensure_ascii=False)))
     ix.close()
 
 if __name__ == '__main__':
     # build()
-    # test_query('都重生了谁谈恋爱啊')
-    # test_query('出名太快怎么办')
-    # test_query('万古神帝')
-    # test_query('斗气')
-    # test_query('万古剑神')
-    # test_query('修真路')
-    # test_query('入修真路')
-    # test_query('总裁')
+    test_query('遮天')
+
+    test_query('都重生了谁谈恋爱啊')
+    test_query('出名太快怎么办')
+    test_query('万古神帝')
+    test_query('斗气')
+    test_query('史上最牛宗门')
+
+    test_query('总裁')
+    test_query('霸总')
+    test_query('霸道总裁')
+    test_query('贱人')
+    test_query('宫斗')
     print('test')
