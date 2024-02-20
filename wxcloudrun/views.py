@@ -123,7 +123,7 @@ def _process_command(commands):
 
 current_path = os.getcwd()
 app.logger.info('\n\ncurrent_path=' + current_path)
-csv_file_path = os.path.join(current_path, 'wxcloudrun', 'indexdata/DEMO_INDEX.txt')
+csv_file_path = os.path.join(current_path, 'wxcloudrun', 'DEMO_INDEX.txt')
 with open(csv_file_path, 'r') as file:
     lines = file.readlines()
     for line in lines:
