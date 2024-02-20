@@ -125,8 +125,8 @@ def parse_one_detail(line):
     scorerCount = bookInfo['scorerCount']
     scoreDetail = bookInfo['scoreDetail']
     tags = bookInfo['tags']
-    tags.append(className)
-    tags = list(set(tags))
+    tags.append(className.strip())
+    tags = list(set([t.strip() for t in tags]))
     tags_as_str = ','.join(tags)
     status = bookInfo['status']  # 0 连载中，1 已完结
     introduction = bookInfo['introduction']
@@ -151,12 +151,12 @@ def parse_one_detail(line):
 
 
     return {
-        "title": title,
-        "author": author,
+        "title": title.strip(),
+        "author": author.strip(),
         "score": score,
         "scorerCount": scorerCount,
-        "className": className,
-        "tags": tags_as_str,
+        "className": className.strip(),
+        "tags": tags_as_str.strip(),
         "desc": flat_content(title, introduction),
         "url": jump_link
     }
@@ -184,9 +184,10 @@ def load_books():
 
 def build(books):
     jieba.load_userdict("./indexdata/semantic_labels.dict.txt")
+
     # 创建schema, stored为True表示能够被检索
     schema = Schema(
-        title=TEXT(stored=True, analyzer=ChineseAnalyzer()),
+        title=TEXT(stored=True),
         author=ID(stored=True),
         score=NUMERIC(stored=True, sortable=True),
         scorerCount=NUMERIC(stored=True, sortable=True),
@@ -195,7 +196,6 @@ def build(books):
         desc=TEXT(stored=True, analyzer=ChineseAnalyzer()),
         url=ID(stored=True)
     )
-
     # 存储schema信息至indexdir目录
     indexdir = 'indexdir/'
     if not os.path.exists(indexdir):
@@ -203,8 +203,6 @@ def build(books):
         # 使用create_in方法创建索引，index_path为索引路径，schema为前面定义的索引字段，indexname为索引名称（根据需要进行修改）
         ix = create_in(indexdir, schema=schema, indexname='indexname')
 
-    #
-    # 按照schema定义信息，增加需要建立索引的文档
     writer = ix.writer()
     for book in books:
         writer.add_document(
@@ -233,7 +231,6 @@ def test_query(keyword):
             flag = EMOJI_BY_CLASSNAME[className][random.randrange(len(EMOJI_BY_CLASSNAME[className]))]
         return flag
 
-    EMOJI_ALL = '🧠👀👁️🦾✍️🦴🫁👽👻👁️‍🗨️🐾🐈‍⬛🪶🕸️🕷️🏫🏥🌁🌄🌃🌆🌉🎪🎡🚨🚂🚇🧳🛸🛎️⌚⏳🕘🕰️🎃🎐🃏🧸🪁🪆🪄🎨👓👜👝💾🎞️📹📺📼📷🎥🔍🔎🔦🕯️📃📜📰🗞️✉️📦📮🖋️📆📐💼📎🗄️🔒🗝️🧪💉🩸💊'
     current_path = os.getcwd()
     indexdir = os.path.join(current_path, 'indexdir/')
     ix = open_dir(indexdir, indexname='indexname')
@@ -244,6 +241,7 @@ def test_query(keyword):
     results = searcher.search(parser, limit=None, sortedby=facet, terms=True)
     print('\n一共发现{}份【{}】文档。'.format(len(results), keyword))
     for i in range(min(9999, len(results))):
+        # 标题
         print('《{}》{}著。{}。{}。评分:{}。{}'.format(
             results[i].fields()['title'],
             results[i].fields()['author'],
@@ -264,6 +262,11 @@ if __name__ == '__main__':
     test_query('赞美愚者')
     test_query('愚者先生')
     test_query('诡秘之主')
+    test_query('斗破苍穹')
+    test_query('天蚕土豆')
+    test_query('斗破')
+    test_query('烽火戏诸侯')
+    test_query('雪中悍刀行')
 
 
     # test_query('都重生了谁谈恋爱啊')
