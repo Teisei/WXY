@@ -15,6 +15,8 @@ import threading
 import os
 import urllib.parse
 
+from wxcloudrun.utils import EMOJIS_BY_TAG
+
 FIRST_CONTENT = '欢迎关注。\r\n 搜索关键词获取小说。比如“斗破苍穹”、“按摩”、“魔法”等'
 
 RECOMMEND_CONTENT = {
@@ -186,31 +188,11 @@ def _cut_setence(a, max_len=16):
     else:
         return a[:max_len-1]+'...'
 
-# 来源：https://www.emojiall.com/zh-hans/all-emojis
-EMOJI_ALL = '👹🪽⛩️☘️🍀🍂🏔️🌋🏜️🗻🏝️🏛️🏯🏰⛪🕌🕋🕍🛕♨️🌪️🌑🎎🎏🥋🎴🔮🎭👑👘📿🥻🪭🪇🪕🏮🕯️🪔📜📕💰💸🪙⚔️🏹🗡️🛡️🪝🧪🪞⚰️🗿⚱️🧿🪦🪬☪️☯️☮️🛐♈♌♋⚜️⚕️🔰🔱💠🏴‍☠️🥷🧠👀👁️🦾✍️🦴🫁👽👻👁️‍🗨️🐾🐈‍⬛🪶🕸️🕷️🏫🏥🌁🌄🌃🌆🌉🎪🎡🚨🚂🚇🧳🛸🛎️⌚⏳🕘🕰️🎃🎐🃏🧸🪁🪆🪄🎨👓👜👝💾🎞️📹📺📼📷🎥🔍🔎🔦🕯️📃📜📰🗞️✉️📦📮🖋️📆📐💼📎🗄️🔒🗝️🧪💉🩸💊💰💴💳💵💶💷💸🧾🪙✏️✒️📝🖊️🖋️🖌️🖍️☢️🔞🚫☣️⛔⭐❄️☂️☀️☁️🌊💡🫵🤟🫰🤞💀☠️👅👄🫦👙㊙️🈲🏳️🏴🚩🏳️‍🌈🎌🏁🥷🧙🧙‍♂️🧙‍♀️🧚🧚‍♂️🧚‍♀️🧜🧜‍♂️🧜‍♀️🧝🧝‍♂️🧝‍♀️🧞🧞‍♂️🧞‍♀️🏇⛷️🏂🏄🏄‍♂️🏄‍♀️🏊🏊‍♂️🏊‍♀️⛹️⛹️‍♂️⛹️‍♀️🤹🤹‍♂️🤹‍♀️🧘🧘‍♂️🧘‍♀️'
-EMOJI_BY_CLASSNAME = {
-    "玄幻": '🪽⛩️👹🏯🌪️🌑🥋📿🥻🪭🪙⚔️🏹🗡️🛡️'
-    # "奇幻": [],
-    # "武侠": [],
-    # "仙侠": [],
-    # "都市": [],
-    # "现实": [],
-    # "军事": [],
-    # "历史": [],
-    # "悬疑": [],
-    # "游戏": [],
-    # "竞技": [],
-    # "科幻": [],
-    # "灵异": [],
-    # "二次元": [],
-    # "同人": [],
-    # "": []
-}
 
 def _get_emoji(className):
     flag = '👉'
-    if className in EMOJI_BY_CLASSNAME:
-        flag = EMOJI_BY_CLASSNAME[className][random.randrange(len(EMOJI_BY_CLASSNAME[className]))]
+    if className in EMOJIS_BY_TAG:
+        flag = EMOJIS_BY_TAG[className][random.randrange(len(EMOJIS_BY_TAG[className]))]
     return flag
 
 def _searchContentByKeyword(kw):
