@@ -120,7 +120,6 @@ def _process_command(commands):
             del UID_TO_CONTENT[title]
     return "success"
 
-
 current_path = os.getcwd()
 app.logger.info('\n\ncurrent_path=' + current_path)
 csv_file_path = os.path.join(current_path, 'wxcloudrun', 'DEMO_INDEX.txt')
