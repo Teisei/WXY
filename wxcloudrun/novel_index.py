@@ -31,7 +31,7 @@ def search_by_keyword(keyword):
     # 多关键词同时搜索
     parser = MultifieldParser(["title", 'desc', 'author'], ix.schema).parse(keyword)
     # 对结果进行排序
-    facet = FieldFacet("title", reverse=True)
+    facet = FieldFacet("scorerCount", reverse=True)
     # limit为搜索结果的限制，默认为10，None为不限制。sortedby为排序规则
     results = searcher.search(parser, limit=None, sortedby=facet, terms=True)
     return results
