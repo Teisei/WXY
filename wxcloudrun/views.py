@@ -1,3 +1,4 @@
+import random
 from datetime import datetime
 import time
 from flask import render_template, request
@@ -183,31 +184,59 @@ def _cut_setence(a, max_len=16):
     else:
         return a[:max_len-1]+'...'
 
+EMOJI_ALL = '🧠👀👁️🦾✍️🦴🫁👽👻👁️‍🗨️🐾🐈‍⬛🪶🕸️🕷️🏫🏥🌁🌄🌃🌆🌉🎪🎡🚨🚂🚇🧳🛸🛎️⌚⏳🕘🕰️🎃🎐🃏🧸🪁🪆🪄🎨👓👜👝💾🎞️📹📺📼📷🎥🔍🔎🔦🕯️📃📜📰🗞️✉️📦📮🖋️📆📐💼📎🗄️🔒🗝️🧪💉🩸💊'
+EMOJI_BY_CLASSNAME = {
+    "玄幻": '👹🪽⛩️☘️🍀🍂🏔️🌋🏜️🗻🏝️🏛️🏯🏰⛪🕌🕋🕍🛕♨️🌪️🌑🎎🎏🥋🎴🔮🎭👑👘📿🥻🪭🪇🪕🏮🕯️🪔📜📕💰💸🪙⚔️🏹🗡️🛡️🪝🧪🪞⚰️🗿⚱️🧿🪦🪬☪️☯️☮️🛐♈♌♋⚜️⚕️🔰🔱💠🏴‍☠️🥷'
+    # "奇幻": [],
+    # "武侠": [],
+    # "仙侠": [],
+    # "都市": [],
+    # "现实": [],
+    # "军事": [],
+    # "历史": [],
+    # "悬疑": [],
+    # "游戏": [],
+    # "竞技": [],
+    # "科幻": [],
+    # "灵异": [],
+    # "二次元": [],
+    # "同人": [],
+    # "": []
+}
+
+def _get_emoji(className):
+    flag = '👉'
+    if className in EMOJI_BY_CLASSNAME:
+        flag = EMOJI_BY_CLASSNAME[className][random.randrange(len(EMOJI_BY_CLASSNAME[className]))]
+    return flag
+
 def _searchContentByKeyword(kw):
     search_url = 'https://wx654c68c01309e111.wxcp.qidian.com/wxfxhzjy39518/search.html?wd={}'.format(urllib.parse.quote(kw))
-    if kw in UID_TO_CONTENT:
-        # perfect match
-        return "👉{} \r\n \r\n 🚀{}".format(
-            "<a href='{}'>《{}》{}</a>".format(UID_TO_CONTENT[kw]['url'], UID_TO_CONTENT[kw]['title'], _cut_setence(UID_TO_CONTENT[kw]['desc'])),
-            "<a href='{}'>加载更多【{}】内容</a>".format(search_url, kw)
-        )
     results = novel_index.search_by_keyword(kw)
     if results and len(results) > 0:
         if results[0].fields()['title'] == kw:
             # perfect match
-            return "👉{} \r\n \r\n 🚀{}".format(
-                "<a href='{}'>《{}》{}</a>".format(results[0].fields()['url'], results[0].fields()['title'], _cut_setence(results[0].fields()['desc'])),
-                "<a href='{}'>加载更多【{}】内容</a>".format(search_url, kw)
+            row = results[0]
+            return "{} \r\n \r\n {}".format(
+                "{}<a href='{}'>《{}》{}</a>".format(_get_emoji(row.fields()['className']), row.fields()['url'], row.fields()['title'], _cut_setence(row.fields()['desc'])),
+                "🚀<a href='{}'>加载更多【{}】内容</a>".format(search_url, kw)
             )
         else:
             res = ''
             for j in range(0, min(5, len(results))):
                 row = results[j]
-                res = res + "👉<a href='{}'>《{}》{}</a> \r\n \r\n".format(row.fields()['url'], row.fields()['title'], _cut_setence(row.fields()['desc']))
+                res = res + "{}<a href='{}'>《{}》{}</a> \r\n \r\n".format(_get_emoji(row.fields()['className']), row.fields()['url'], row.fields()['title'], _cut_setence(row.fields()['desc']))
             res = res + "<a href='{}'>加载更多【{}】内容</a>".format(search_url, kw)
             return res
     else:
-        return "<a href='{}'>🎁解锁【{}】内容</a>\r\n \r\n ---其他精彩内容---\r\n{}".format(search_url, kw, RECOMMEND_CONTENT['1'])
+        if kw in UID_TO_CONTENT:
+            # perfect match
+            return "👉{} \r\n \r\n 🚀{}".format(
+                "<a href='{}'>《{}》{}</a>".format(UID_TO_CONTENT[kw]['url'], UID_TO_CONTENT[kw]['title'], _cut_setence(UID_TO_CONTENT[kw]['desc'])),
+                "<a href='{}'>加载更多【{}】内容</a>".format(search_url, kw)
+            )
+        else:
+            return "<a href='{}'>🎁解锁【{}】内容</a>\r\n \r\n ---其他精彩内容---\r\n{}".format(search_url, kw, RECOMMEND_CONTENT['1'])
 
 # --------------------------------------------------
 # 获取所有关注者openid

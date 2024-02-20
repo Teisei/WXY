@@ -155,6 +155,7 @@ def parse_one_detail(line):
         "author": author,
         "score": score,
         "scorerCount": scorerCount,
+        "className": className,
         "tags": tags_as_str,
         "desc": flat_content(title, introduction),
         "url": jump_link
@@ -189,6 +190,7 @@ def build(books):
         author=ID(stored=True),
         score=NUMERIC(stored=True, sortable=True),
         scorerCount=NUMERIC(stored=True, sortable=True),
+        className=ID(stored=True),
         tags=KEYWORD(stored=True, analyzer=ChineseAnalyzer()),
         desc=TEXT(stored=True, analyzer=ChineseAnalyzer()),
         url=ID(stored=True)
@@ -210,6 +212,7 @@ def build(books):
             author=book['author'],
             score=book['score'],
             scorerCount=book['scorerCount'],
+            className=book['className'],
             tags=book['tags'],
             desc=book['desc'],
             url=book['url']
@@ -217,6 +220,20 @@ def build(books):
     writer.commit()
 
 def test_query(keyword):
+    EMOJI_ALL = '🧠👀👁️🦾✍️🦴🫁👽👻👁️‍🗨️🐾🐈‍⬛🪶🕸️🕷️🏫🏥🌁🌄🌃🌆🌉🎪🎡🚨🚂🚇🧳🛸🛎️⌚⏳🕘🕰️🎃🎐🃏🧸🪁🪆🪄🎨👓👜👝💾🎞️📹📺📼📷🎥🔍🔎🔦🕯️📃📜📰🗞️✉️📦📮🖋️📆📐💼📎🗄️🔒🗝️🧪💉🩸💊'
+    EMOJI_BY_CLASSNAME = {
+        "玄幻": '👹🪽⛩️☘️🍀🍂🏔️🌋🏜️🗻🏝️🏛️🏯🏰⛪🕌🕋🕍🛕♨️🌪️🌑🎎🎏🥋🎴🔮🎭👑👘📿🥻🪭🪇🪕🏮🕯️🪔📜📕💰💸🪙⚔️🏹🗡️🛡️🪝🧪🪞⚰️🗿⚱️🧿🪦🪬☪️☯️☮️🛐♈♌♋⚜️⚕️🔰🔱💠🏴‍☠️🥷'
+        , "悬疑": EMOJI_ALL
+    }
+
+    def _get_emoji(className):
+        import random
+        flag = '👉'
+        if className in EMOJI_BY_CLASSNAME:
+            flag = EMOJI_BY_CLASSNAME[className][random.randrange(len(EMOJI_BY_CLASSNAME[className]))]
+        return flag
+
+    EMOJI_ALL = '🧠👀👁️🦾✍️🦴🫁👽👻👁️‍🗨️🐾🐈‍⬛🪶🕸️🕷️🏫🏥🌁🌄🌃🌆🌉🎪🎡🚨🚂🚇🧳🛸🛎️⌚⏳🕘🕰️🎃🎐🃏🧸🪁🪆🪄🎨👓👜👝💾🎞️📹📺📼📷🎥🔍🔎🔦🕯️📃📜📰🗞️✉️📦📮🖋️📆📐💼📎🗄️🔒🗝️🧪💉🩸💊'
     current_path = os.getcwd()
     indexdir = os.path.join(current_path, 'indexdir/')
     ix = open_dir(indexdir, indexname='indexname')
@@ -227,18 +244,26 @@ def test_query(keyword):
     results = searcher.search(parser, limit=None, sortedby=facet, terms=True)
     print('\n一共发现{}份【{}】文档。'.format(len(results), keyword))
     for i in range(min(9999, len(results))):
-        print('《{}》{}著。{}'.format(results[i].fields()['title'], results[i].fields()['author'], results[i].fields()['desc']))
+        print('《{}》{}著。{}。{}。评分:{}。{}'.format(
+            results[i].fields()['title'],
+            results[i].fields()['author'],
+            _get_emoji(results[i].fields()['className']),
+            # results[i].fields()['className'],
+            results[i].fields()['tags'],
+            results[i].fields()['score'],
+            results[i].fields()['desc'])
+        )
         # print((json.dumps(results[i].fields(), ensure_ascii=False)))
     ix.close()
 
 if __name__ == '__main__':
     # books = load_books()
     # build(books)
-    test_query('诡秘之主')
     test_query('爱潜水的乌贼')
     test_query('诡秘')
     test_query('赞美愚者')
     test_query('愚者先生')
+    test_query('诡秘之主')
 
 
     # test_query('都重生了谁谈恋爱啊')
