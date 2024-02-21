@@ -24,9 +24,12 @@ STOPWORDS = [a for a in '，、。！？；：“”‘’（）【】《》【�
 jieba.load_userdict('indexdata/stopwords.dict.txt')
 jieba.analyse.set_stop_words('indexdata/stopwords.dict.txt')
 BAD_SENTENCE_PATTERN = [
-    r'群.*\d.*\d.*\d.*\d.*\d.*\d.*\d'
+r'群.*\d.*\d.*\d.*\d.*\d.*\d.*\d',
+r'新书'
 ]
 def flat_sentence(sentence):
+    if sentence == '':
+        return ''
     # 特殊字符过滤
     for pattern in BAD_SENTENCE_PATTERN:
         matches = re.findall(pattern, sentence)
@@ -56,6 +59,22 @@ def is_meaningful_line(text):
         return False
     else:
         return True
+
+def remove_nested_parentheses(s):
+    # 计数器，用于跟踪括号的嵌套深度
+    count = 0
+    # 结果列表，用于存储处理后的字符
+    result = []
+    # 遍历字符串中的每个字符
+    for char in s:
+        if char in '(（':
+            count += 1
+        elif char in '）)' and count:
+            count -= 1
+        elif count == 0:
+            result.append(char)
+    # 将结果列表转换为字符串
+    return ''.join(result)
 
 def flat_content(title, text):
     # 网页特殊字符替换
@@ -88,15 +107,20 @@ def flat_content(title, text):
     # 断句
 
     # 分句子处理
-    sentences = [e.strip() for e in re.split(r'[。！？\n\r]', text2)]
+    # 将括号内的句号替换为逗号
+    # text2 = re.sub(r'（([^）]+)。）', r'（\1,）', text2)
+    text3 = remove_nested_parentheses(text2)
+    sentences = [e.strip() for e in re.split(r'[。！？\n\r]', text3)]
     sentences = [flat_sentence(e.strip()) for e in sentences]
     sentences = [a for a in sentences if a != '']
-    text3 = '\n'.join(sentences).strip()
+    text4 = '\n'.join(sentences).strip()
 
     # tp = r'\n.*\n'
-    # x = re.findall(tp, text)
+    # tp = r'新书'
+    # x = re.findall(tp, text3)
+    # x = '《' in text4
     # if x:
-    #     print("\n\n{}\n《{}》\n=== before【{}】\n=== after 【{}】".format(x, title, text, text3))
+    #     print("\n\n{}\n《{}》\n=== before【{}】\n=== after 【{}】".format(x, title, text, text4))
 
     return '；'.join(sentences)
     # # 分句子
