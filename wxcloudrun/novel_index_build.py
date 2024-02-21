@@ -257,6 +257,8 @@ def test_query(keyword):
 if __name__ == '__main__':
     # books = load_books()
     # build(books)
+    test_query('凡人修仙传')
+    test_query('遮天')
     test_query('爱潜水的乌贼')
     test_query('诡秘')
     test_query('赞美愚者')
