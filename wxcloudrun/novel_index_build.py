@@ -279,8 +279,8 @@ def test_query(keyword):
     ix.close()
 
 if __name__ == '__main__':
-    # books = load_books()
-    # build(books)
+    books = load_books()
+    build(books)
     test_query('凡人修仙传')
     test_query('遮天')
     test_query('爱潜水的乌贼')
